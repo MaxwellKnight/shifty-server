@@ -18,7 +18,7 @@ createTableRouter.get('/create', async (req, res) => {
                     limit: val.limit,
                     isFull: val.isFull,
                     length: val.length,
-                    agents: val.agents?.map(ag => ag.toLocaleLowerCase)
+                    agents: val.agents
                 }
                 printable.push(toPrint)
                 finalTable.push(val)
@@ -27,7 +27,7 @@ createTableRouter.get('/create', async (req, res) => {
             console.log(`DAY OF WEEK: ${key}`)
             console.table(printable)
         }
-        res.send(finalTable)
+        res.send(table)
     } catch (err) {
         console.log(err)
     }

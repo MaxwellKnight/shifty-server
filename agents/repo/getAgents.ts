@@ -17,8 +17,8 @@ const getAllAgents = async () => {
 
 const getAgentById = async (id: string) => {
     try {
-        const allAgents: IBaseAgent | null = await Agent.findById(id).exec()
-        return allAgents
+        const agent: IBaseAgent | null = await Agent.findById(id).exec()
+        return agent
     }
     catch (e) {
         console.log(e)

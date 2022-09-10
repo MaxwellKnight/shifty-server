@@ -13,7 +13,7 @@ const BaseAgentSchema = new mongoose.Schema<IBaseAgent>({
         trim: true,
         maxlength: [20, "name cannot be more than 20 characters"]
     },
-    username: { type: String, required: true, lowercase: true },
+    username: { type: String, required: true, lowercase: true, unique: true },
     isAdmin: { type: Boolean, required: true },
     isStudent: { type: Boolean, required: true },
     isMobile: { type: Boolean, required: false },

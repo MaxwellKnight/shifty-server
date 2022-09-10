@@ -5,9 +5,9 @@ import getTableRouter from './routes/getTable'
 
 const tableRootRouter = express.Router()
 
-tableRootRouter.use('/', getTableRouter)
 tableRootRouter.use('/new', createTableRouter)
 tableRootRouter.use('/delete', deleteTableRouter)
+tableRootRouter.use('/', getTableRouter)
 
 export default tableRootRouter
 
