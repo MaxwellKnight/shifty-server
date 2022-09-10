@@ -6,7 +6,7 @@ const BaseShiftSchema = new mongoose.Schema<IBaseShift>({
     facility: { type: String, required: true },
     type: { type: String, required: true },
     limit: { type: Number, required: true },
-    agents: { type: [mongoose.Schema.Types.ObjectId], required: true, ref: 'Agent' },
+    agents: [{ type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Agent' }],
     date: { type: Date, required: true },
     length: { type: Number, required: true },
     isFull: { type: Boolean, required: true },

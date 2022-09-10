@@ -6,7 +6,13 @@ const ObjectIdType = mongoose.Schema.Types.ObjectId
 
 const BaseAgentSchema = new mongoose.Schema<IBaseAgent>({
     teamId: { type: Number, required: true },
-    name: { type: String, required: true, lowercase: true },
+    name: {
+        type: String,
+        required: true,
+        lowercase: true,
+        trim: true,
+        maxlength: [20, "name cannot be more than 20 characters"]
+    },
     username: { type: String, required: true, lowercase: true },
     isAdmin: { type: Boolean, required: true },
     isStudent: { type: Boolean, required: true },
@@ -29,7 +35,7 @@ const BaseAgentSchema = new mongoose.Schema<IBaseAgent>({
     weeklyConstraints: { type: Map<String, IDailyConstraints>, required: false },
     weeklyShifts: { type: Map<String, Number>, required: false },
     nextShift: { type: ObjectIdType, required: false },
-    prevShifts: { type: [ObjectIdType], required: false },
+    prevShifts: [{ type: ObjectIdType, required: false, ref: 'Shift' }],
     createdAt: {
         type: Date,
         default: () => Date.now()
