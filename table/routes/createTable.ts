@@ -4,7 +4,7 @@ import createTable from '../services/createTable'
 
 const createTableRouter = express.Router()
 
-createTableRouter.post('/', async (req, res) => {
+createTableRouter.get('/create', async (req, res) => {
     try {
         const table = await createTable()
         const finalTable: IBaseShift[] = []
