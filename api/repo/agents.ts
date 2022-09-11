@@ -1,9 +1,14 @@
-import mongoose from "mongoose"
 import { IBaseAgent } from "../../interfaces/IBaseAgent"
 import { Agent } from "../../models/Agent"
 
-
-mongoose.connect('mongodb://localhost/shifty')
+const createAgent = async (agent: IBaseAgent) => {
+    try {
+        const newAgent: IBaseAgent = await Agent.create(agent)
+        return (newAgent)
+    } catch (err) {
+        return err
+    }
+}
 
 const getAllAgents = async () => {
     try {
@@ -14,6 +19,14 @@ const getAllAgents = async () => {
         console.log(e)
     }
 }
+const deleteAgentById = async (id: string) => {
+    try {
+        await Agent.findByIdAndDelete(id)
+    } catch (e: any) {
+        console.log(e)
+    }
+}
+
 
 const getAgentById = async (id: string) => {
     try {
@@ -25,5 +38,5 @@ const getAgentById = async (id: string) => {
     }
 }
 
+export { getAgentById, getAllAgents, deleteAgentById, createAgent }
 
-export { getAgentById, getAllAgents }

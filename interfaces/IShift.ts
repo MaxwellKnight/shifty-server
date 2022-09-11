@@ -4,7 +4,7 @@ export interface IBaseShift {
     facility: string,
     type: string,
     limit: number
-    agents?: string[],
+    agents: string[],
     date: Date,
     length: number,
     isFull: boolean,

@@ -1,8 +1,5 @@
-import mongoose from "mongoose"
-import { Shift } from '../../models/Shift'
-import { IBaseShift } from '../../interfaces/IShift'
-
-mongoose.connect('mongodb://localhost/shifty')
+import { IBaseShift } from "../../interfaces/IShift"
+import { Shift } from "../../models/Shift"
 
 const getShifts = async () => {
     try {

@@ -1,18 +1,18 @@
 import express from 'express'
 
-const getShifts = express.Router()
+const shiftsRouter = express.Router()
 
-getShifts.get('/', (req, res) => {
+shiftsRouter.get('/', (req, res) => {
     res.send('<h1>All Shifts</h1>')
 })
 
-getShifts.get('/:id', (req, res) => {
+shiftsRouter.get('/:id', (req, res) => {
     res.send(`<h1>Shift: ${req.params.id}</h1>`)
 })
 
-getShifts.get('/edit/:id', (req, res) => {
+shiftsRouter.get('/edit/:id', (req, res) => {
     res.send(`<h1>Edit page for shift: ${req.params.id}</h1>`)
 })
 
 
-export default getShifts
+export default shiftsRouter

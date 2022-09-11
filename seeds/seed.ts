@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import connectDB from "../config/mongoose"
 import { IBaseAgent } from "../interfaces/IBaseAgent"
 import { IDailyConstraints, IBaseShift } from "../interfaces/IShift"
 import { Agent } from '../models/Agent'
@@ -9,10 +10,8 @@ import constants from './../constants/index'
 const { SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY } = constants.weekDays
 
 
-const fnames: String[] = ['Maxwell', 'Yuval', 'Lior', 'Yuval', 'Shi', 'Avi', 'Ron', 'Yoni', 'Said', 'Arnon', 'Gamal', 'Knight', 'Haviv', 'Saban', 'Attias', 'Afriat', 'Iluz', 'Yafe', 'Aharoni', 'Yizhak', 'Yeosha']
+const fnames: String[] = ['Maxwell', 'Yuval', 'Lior', 'Yuval', 'Shi', 'Avi', 'Ron', 'Yoni', 'Said', 'Arnon', 'Gamal', 'Beni', "Michael", "Miguel", "Arthur", "Felix", "Burna", "Yehezkel", "Sapir", "Yael", "Dave", "Jesus", "Avraham"]
 const lnames: String[] = ['Knight', 'Haviv', 'Saban', 'Attias', 'Afriat', 'Iluz', 'Yafe', 'Aharoni', 'Yizhak', 'Yeosha', 'Maxwell', 'Yuval', 'Lior', 'Yuval', 'Shi', 'Avi', 'Ron', 'Yoni', 'Said', 'Arnon', 'Gamal']
-
-mongoose.connect('mongodb://localhost/shifty')
 
 const table = new Map<String, IBaseShift[]>([
     [SUNDAY, []],
@@ -66,9 +65,10 @@ const getAgents = (): IBaseAgent[] => {
         const newAgent = new Agent<IBaseAgent>({
             teamId: i,
             name: getName(),
-            username: 'KLOK',
-            isAdmin: getRandomBool(),
+            username: `klok${i}`,
+            role: 'agent',
             isStudent: getRandomBool(),
+            isMobile: getRandomBool(),
             contact: {
                 phone: '0543456421',
                 email: 'maxwell@gmail.com',
@@ -79,6 +79,7 @@ const getAgents = (): IBaseAgent[] => {
                 totalCount: 0,
                 limit: 6
             },
+            nextShift: undefined,
             weeklyConstraints: getWeelyCons(),
             createdAt: new Date,
             updatedAt: new Date
@@ -179,6 +180,7 @@ const getShifts = (): IBaseShift[] => {
 
 const agents = getAgents()
 const shifts = getShifts()
+connectDB()
 
 const pushDB = async () => {
     try {
