@@ -72,15 +72,13 @@ const fillShift = (
 
     //while the shift is not full keep searching for agents
     while (!shift.isFull) {
-        //checks that the we are not iterating through undefined agents
-        const cons: IDailyConstraints | undefined = agents[index].weeklyConstraints.get(String(key))
         //if the shift is FULL then mark isFull to true 
         //it will exit the loop and continue to the next shift
         if (shift.agents?.length === shift.limit) {
             shift.isFull = true
         }
         else {
-            const [isOnShift, updatedshift]: [boolean, IDailyConstraints | undefined] = validateCons(key, agents[index], cons!, shift)
+            const [isOnShift, updatedshift]: [boolean, IDailyConstraints | undefined] = validateCons(key, agents[index], shift)
             if (isOnShift) {
                 //push new shift to the weekly shifts of the agent
                 if (agents[index].weeklyLimit.totalCount < agents[index].weeklyLimit.limit) {
@@ -96,13 +94,27 @@ const fillShift = (
     // New filled shift with available agents
     return shift
 }
-
-const validateCons = (key: String, agent: IBaseAgent, cons: IDailyConstraints, shift: IBaseShift): [boolean, IDailyConstraints] => {
+/**
+ * Validating the weekly constraints of an agent
+ * input - 
+ *  Key : String which describes the day of the week
+ *  Agent : Object which represents the agent to validate for
+ *  Shift : The shift which the function validates the agent can work
+ * 
+ * output - 
+ *      Array : 1st index true/false if working or not
+ *              2nd index is the shift the agent is working
+ *     
+ */
+const validateCons = (key: String, agent: IBaseAgent, shift: IBaseShift): [boolean, IDailyConstraints] => {
 
     if (agent.weeklyShifts) {
         const dailyShift: IDailyConstraints | undefined = agent.weeklyShifts.get(String(key))
         const workShift: IDailyConstraints | undefined = agent.weeklyShifts.get(String(key))
+        const cons: IDailyConstraints | undefined = agent.weeklyConstraints.get(String(key))
 
+
+        //Map which helps identifying if the agent worked the day before and which shift he worked
         const validationMap = new Map<string, string>([
             [SUNDAY, SATURDAY],
             [MONDAY, SUNDAY],
@@ -116,6 +128,11 @@ const validateCons = (key: String, agent: IBaseAgent, cons: IDailyConstraints, s
 
         if (dailyShift && workShift) {
             if (shift.agents.includes(String(agent._id))) return [false, workShift]
+
+            /**
+             * If the shift we're currenly checking is a morning shift
+             * than this segment checks if the user had worked the day before
+             */
             if (shift.type === MORNING) {
                 if (!dailyShift?.morning && !dailyShift?.noon && !dailyShift?.night && !cons?.morning) {
                     const checkNightBefore: string | undefined = validationMap.get(String(key))
@@ -127,6 +144,11 @@ const validateCons = (key: String, agent: IBaseAgent, cons: IDailyConstraints, s
                     return [true, workShift]
                 }
             }
+            /**
+             * If the shift we're currenly checking is a noon or a night shift
+             * we need to make sure that if we assign the agent a night shift
+             * wee keep track of the weekly night count 
+             */
             else if (shift.type === NOON || shift.type === NIGHT) {
                 if (!dailyShift?.morning && !dailyShift?.noon && !dailyShift?.night && !cons?.noon) {
 

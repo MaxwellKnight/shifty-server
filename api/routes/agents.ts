@@ -22,7 +22,7 @@ agentRouter.get('/edit/:id', (req, res) => {
     res.send(`<h1>Edit for agent: ${req.params.id}</h1>`)
 })
 
-agentRouter.put('/', (req, res) => {
+agentRouter.patch('/', (req, res) => {
     res.send(`<h1>Updated Agent</h1>`)
 })
 agentRouter.put('/all', (req, res) => {
