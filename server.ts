@@ -16,7 +16,7 @@ app.use(setHeaders)
 app.use(express.json())
 app.use('/agents', agentRouter)
 app.use('/shifts', shiftsRouter)
-app.use('/table', tableRouter)
+app.use('/tables', tableRouter)
 
 app.listen(port, () => {
     connectDB()

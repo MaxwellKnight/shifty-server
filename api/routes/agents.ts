@@ -12,20 +12,19 @@ agentRouter.get('/', async (req, res) => {
     }
 })
 
+
 agentRouter.get('/:id', async (req, res) => {
     const agent: IBaseAgent | null | undefined = await getAgentById(req.params.id)
     if (agent) res.status(200).send(agent)
     else res.status(404).send('could not find agent')
 })
 
-agentRouter.get('/edit/:id', (req, res) => {
-    res.send(`<h1>Edit for agent: ${req.params.id}</h1>`)
-})
-
 agentRouter.patch('/', (req, res) => {
     res.send(`<h1>Updated Agent</h1>`)
 })
-agentRouter.put('/all', (req, res) => {
+
+
+agentRouter.patch('/all', (req, res) => {
     res.send(`<h1>Updated All Agents</h1>`)
 })
 
