@@ -2,7 +2,7 @@ import { IBaseShift, IDailyConstraints } from "../../interfaces/IShift"
 import { IBaseAgent } from "../../interfaces/IBaseAgent"
 import { shuffleArray, sortByShift } from '../../utils'
 import { getShifts } from "../repo/shifts"
-import { getAllAgents } from '../repo/agents'
+import { getAllAgents, updateAllAgents } from '../repo/agents'
 
 import constants from '../../constants/index'
 const { SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY } = constants.weekDays
@@ -15,7 +15,7 @@ const { MORNING, NOON, NIGHT } = constants.shiftType
  *  Agents : Array of BaseAgents 
  * 
  * output - 
- *      Array : with new weekly shifts at indx 0 
+ *      Array : with new weekly shiftnps at indx 0 
  *     
  */
 const createTable = async (): Promise<Map<String, IBaseShift[]>> => {
@@ -44,6 +44,7 @@ const createTable = async (): Promise<Map<String, IBaseShift[]>> => {
                 })
             }
         }
+        await updateAllAgents(agents)
         //Arranged table and all agents
     } catch (err) {
         console.log(err)
@@ -81,11 +82,8 @@ const fillShift = (
             const [isOnShift, updatedshift]: [boolean, IDailyConstraints | undefined] = validateCons(key, agents[index], shift)
             if (isOnShift) {
                 //push new shift to the weekly shifts of the agent
-                if (agents[index].weeklyLimit.totalCount < agents[index].weeklyLimit.limit) {
-                    shift.agents?.push(String(agents[index]._id))
-                    agents[index].weeklyShifts.set(String(key), updatedshift ?? { morning: false, noon: false, night: false })
-                    agents[index].weeklyLimit.totalCount++
-                }
+                shift.agents?.push(String(agents[index]._id))
+                agents[index].weeklyShifts.set(String(key), updatedshift)
             }
         }
         index++
@@ -108,7 +106,7 @@ const fillShift = (
  */
 const validateCons = (key: String, agent: IBaseAgent, shift: IBaseShift): [boolean, IDailyConstraints] => {
 
-    if (agent.weeklyShifts) {
+    if (agent.weeklyShifts && (agent.weeklyLimit.totalCount < agent.weeklyLimit.limit)) {
         const dailyShift: IDailyConstraints | undefined = agent.weeklyShifts.get(String(key))
         const workShift: IDailyConstraints | undefined = agent.weeklyShifts.get(String(key))
         const cons: IDailyConstraints | undefined = agent.weeklyConstraints.get(String(key))
@@ -134,12 +132,13 @@ const validateCons = (key: String, agent: IBaseAgent, shift: IBaseShift): [boole
              * than this segment checks if the user had worked the day before
              */
             if (shift.type === MORNING) {
-                if (!dailyShift?.morning && !dailyShift?.noon && !dailyShift?.night && !cons?.morning) {
+                if (!dailyShift?.morning && !dailyShift?.noon && !dailyShift?.night && cons?.morning) {
                     const checkNightBefore: string | undefined = validationMap.get(String(key))
                     const toCheck: IDailyConstraints | undefined = agent.weeklyShifts!.get(String(checkNightBefore))
                     if (toCheck?.night)
                         return [false, workShift]
 
+                    agent.weeklyLimit.totalCount++
                     workShift!.morning = true
                     return [true, workShift]
                 }
@@ -150,14 +149,16 @@ const validateCons = (key: String, agent: IBaseAgent, shift: IBaseShift): [boole
              * wee keep track of the weekly night count 
              */
             else if (shift.type === NOON || shift.type === NIGHT) {
-                if (!dailyShift?.morning && !dailyShift?.noon && !dailyShift?.night && !cons?.noon) {
+                if (!dailyShift?.morning && !dailyShift?.noon && !dailyShift?.night && cons?.noon) {
 
                     switch (shift.type) {
                         case NOON:
+                            agent.weeklyLimit.totalCount++
                             workShift!.noon = true
                             break
                         case NIGHT:
                             if (agent.weeklyLimit.nightCount >= 2) break
+                            agent.weeklyLimit.totalCount++
                             agent.weeklyLimit.nightCount++
                             workShift!.night = true
                             break

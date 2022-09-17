@@ -38,5 +38,16 @@ const getAgentById = async (id: string) => {
     }
 }
 
-export { getAgentById, getAllAgents, deleteAgentById, createAgent }
+const updateAllAgents = async (agents: IBaseAgent[] | undefined) => {
+    try {
+        agents!.map(async (agent: IBaseAgent) => {
+            await Agent.findByIdAndUpdate(agent._id, { weeklyShifts: agent.weeklyShifts, weeklyLimit: agent.weeklyLimit })
+        })
+    } catch (err) {
+        console.log(err)
+        return err
+    }
+}
+
+export { getAgentById, getAllAgents, deleteAgentById, createAgent, updateAllAgents }
 
