@@ -1,10 +1,11 @@
 import { IBaseShift, IDailyConstraints } from "../../interfaces/IShift"
 import { IBaseAgent } from "../../interfaces/IBaseAgent"
-import { shuffleArray, sortByShift } from '../../utils'
+import { printTable, shuffleArray, sortByShift } from '../../utils'
 import { getShifts } from "../repo/shifts"
 import { getAllAgents, updateAllAgents } from '../repo/agents'
 
 import constants from '../../constants/index'
+import { Table } from "../../models/Table"
 const { SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY } = constants.weekDays
 const { MORNING, NOON, NIGHT } = constants.shiftType
 
@@ -43,6 +44,7 @@ const createTable = async (): Promise<Map<String, IBaseShift[]>> => {
                     value.push(finalShift)
                 })
             }
+
         }
         await updateAllAgents(agents)
         //Arranged table and all agents
@@ -77,6 +79,7 @@ const fillShift = (
         //it will exit the loop and continue to the next shift
         if (shift.agents?.length === shift.limit) {
             shift.isFull = true
+            break
         }
         else {
             const [isOnShift, updatedshift]: [boolean, IDailyConstraints | undefined] = validateCons(key, agents[index], shift)

@@ -1,12 +1,18 @@
 import { table } from 'console'
 import express from 'express'
 import { IBaseShift } from '../../interfaces/IShift'
+import { getAllTables } from '../repo/table'
 import createTable from '../services/table'
 
 const tableRouter = express.Router()
 
-tableRouter.get('/', (req, res) => {
-    res.send('<h1>All Tables</h1>')
+tableRouter.get('/', async (req, res) => {
+    try {
+        const tables: any[] | undefined = await getAllTables()
+        res.status(200).send(tables)
+    } catch (e) {
+        console.log(e)
+    }
 })
 
 tableRouter.route('/new')

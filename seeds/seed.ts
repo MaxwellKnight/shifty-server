@@ -10,8 +10,8 @@ import constants from './../constants/index'
 const { SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY } = constants.weekDays
 
 
-const fnames: String[] = ['Imri', 'Maxwell', 'Yuval', 'Lior', 'Yuval', 'Shi', 'Avi', 'Ron', 'Yoni', 'Yael', 'Arnon', 'Gamal', 'Beni', "Michael", "Miguel", "Arthur", "Felix", "Burna", "Yehezkel", "Sapir", "Yael", "Dave", "Jesus", "Avraham"]
-const lnames: String[] = ['Elmakayes', 'Knight', 'Haviv', 'Saban', 'Attias', 'Afriat', 'Iluz', 'Yafe', 'Aharoni', 'Yizhak', 'Yeosha', 'Maxwell', 'Yuval', 'Lior', 'Yuval', 'Shi', 'Avi', 'Ron', 'Yoni', 'Martin', 'Arnon', 'Gamal']
+const fnames: String[] = ['Aviel', 'Dima', 'Matan', 'Imri', 'Maxwell', 'Yuval', 'Lior', 'Yuval', 'Shi', 'Avi', 'Ron', 'Yoni', 'Yael', 'Arnon', 'Gamal', 'Beni', "Michael", "Miguel", "Arthur", "Felix", "Burna", "Yehezkel", "Sapir", "Yael", "Dave", "Jesus", "Avraham"]
+const lnames: String[] = ['Elkobi', 'Ivkin', 'Klaiman', 'Elmakayes', 'Knight', 'Haviv', 'Saban', 'Attias', 'Afriat', 'Iluz', 'Yafe', 'Aharoni', 'Yizhak', 'Yeosha', 'Maxwell', 'Yuval', 'Lior', 'Yuval', 'Shi', 'Avi', 'Ron', 'Yoni', 'Martin', 'Arnon', 'Gamal']
 
 const table = new Map<String, IBaseShift[]>([
     [SUNDAY, []],
@@ -29,7 +29,7 @@ const getName = (): string => {
 }
 
 const getRandomBool = (): boolean => {
-    return Math.random() < .75
+    return Math.random() < .76
 }
 
 const getWeelyCons = (): Map<string, IDailyConstraints> => {
@@ -61,7 +61,7 @@ const getAgents = (): IBaseAgent[] => {
     const agents: IBaseAgent[] = []
 
     //loop 30 times and create random Agents
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 33; i++) {
         const newAgent = new Agent<IBaseAgent>({
             teamId: i,
             name: getName(),
