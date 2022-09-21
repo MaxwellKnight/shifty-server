@@ -8,7 +8,6 @@ const BaseAgentSchema = new mongoose.Schema<IBaseAgent>({
     name: {
         type: String,
         required: true,
-        lowercase: true,
         trim: true,
         maxlength: [20, "name cannot be more than 20 characters"]
     },

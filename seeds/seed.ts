@@ -29,7 +29,7 @@ const getName = (): string => {
 }
 
 const getRandomBool = (): boolean => {
-    return Math.random() < .76
+    return Math.random() < .5
 }
 
 const getWeelyCons = (): Map<string, IDailyConstraints> => {
