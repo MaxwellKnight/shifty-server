@@ -36,6 +36,27 @@ const DailyConstraintsSchema = new mongoose.Schema<IDailyConstraints>({
     }
 })
 
-const Shift = mongoose.model('Shift', BaseShiftSchema)
+const PrevShiftSchema = new mongoose.Schema({
+    facility: { type: String, required: true },
+    type: { type: String, required: true },
+    limit: { type: Number, required: true },
+    agents: [{ type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Agent' }],
+    date: { type: Date, required: true },
+    length: { type: Number, required: true },
+    isFull: { type: Boolean, required: true },
+    timeLoss: { type: Number, required: false },
+    isFoodSupplied: { type: Boolean, required: false },
+    createdAt: {
+        type: Date,
+        default: () => Date.now()
+    },
+    updatedAt: {
+        type: Date,
+        default: () => Date.now()
+    },
+})
 
-export { IDailyConstraints, BaseShiftSchema, DailyConstraintsSchema, Shift }
+const Shift = mongoose.model('Shift', BaseShiftSchema)
+const PrevShift = mongoose.model('PrevShift', BaseShiftSchema)
+
+export { IDailyConstraints, BaseShiftSchema, DailyConstraintsSchema, Shift, PrevShift }

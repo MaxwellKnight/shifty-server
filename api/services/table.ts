@@ -1,11 +1,12 @@
 import { IBaseShift, IDailyConstraints } from "../../interfaces/IShift"
 import { IBaseAgent } from "../../interfaces/IBaseAgent"
 import { printTable, shuffleArray, sortByShift } from '../../utils'
-import { getShifts } from "../repo/shifts"
+import { getAllShifts, saveAllShifts } from "../repo/shifts"
 import { getAllAgents, updateAllAgents } from '../repo/agents'
 
 import constants from '../../constants/index'
 import { Table } from "../../models/Table"
+import { Shift } from "../../models/Shift"
 const { SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY } = constants.weekDays
 const { MORNING, NOON, NIGHT } = constants.shiftType
 
@@ -35,14 +36,16 @@ const createTable = async (): Promise<Map<String, IBaseShift[]>> => {
 
         for (const [key, value] of table) {
             if (!value.length) {
-                const Shifts: IBaseShift[] | undefined = await getShifts()
+                const Shifts: IBaseShift[] | undefined = await getAllShifts()
                 shuffleArray(agents)
 
-                Shifts?.map(shift => {
+                const prevShifts: IBaseShift[] | undefined = Shifts?.map(shift => {
                     sortByShift(agents!)
                     const finalShift = fillShift(key, value, shift, agents!)
                     value.push(finalShift)
+                    return shift
                 })
+                await saveAllShifts(prevShifts)
             }
 
         }
@@ -51,6 +54,7 @@ const createTable = async (): Promise<Map<String, IBaseShift[]>> => {
     } catch (err) {
         console.log(err)
     }
+    await Table.create({ table })
     return table
 }
 
@@ -65,6 +69,7 @@ const createTable = async (): Promise<Map<String, IBaseShift[]>> => {
  * output - 
  *     Final shift filled with all AVAILABLE agents
  */
+
 const fillShift = (
     key: String, value: IBaseShift[],
     shift: IBaseShift, agents: IBaseAgent[]

@@ -11,4 +11,15 @@ const getAllTables = async () => {
     }
 }
 
-export { getAllTables }
+const getCurrentTable = async () => {
+    try {
+        const table: any = await Table.find()
+        const ftable: any = table[table.length - 1]
+        return ftable
+    } catch (err) {
+        console.log(err)
+        return err
+    }
+}
+
+export { getAllTables, getCurrentTable }

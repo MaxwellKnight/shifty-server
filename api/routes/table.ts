@@ -1,7 +1,7 @@
 import { table } from 'console'
 import express from 'express'
 import { IBaseShift } from '../../interfaces/IShift'
-import { getAllTables } from '../repo/table'
+import { getAllTables, getCurrentTable } from '../repo/table'
 import createTable from '../services/table'
 
 const tableRouter = express.Router()
@@ -18,8 +18,8 @@ tableRouter.get('/', async (req, res) => {
 tableRouter.route('/new')
     .get(async (req, res) => {
         try {
-            const table: Map<String, IBaseShift[]> = await createTable()
-            res.status(200).send(Array.from(table))
+            const table = await getCurrentTable()
+            res.status(200).send(table)
         } catch (err) {
             console.log(err)
             res.status(500).send(err)
@@ -27,7 +27,8 @@ tableRouter.route('/new')
     })
     .post(async (req, res) => {
         try {
-
+            const table: Map<String, IBaseShift[]> = await createTable()
+            res.status(200).send(Array.from(table))
         } catch (err) {
             console.log(err)
             res.status(500).send(err)

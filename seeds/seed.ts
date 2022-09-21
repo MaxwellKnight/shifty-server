@@ -3,7 +3,7 @@ import connectDB from "../config/mongoose"
 import { IBaseAgent } from "../interfaces/IBaseAgent"
 import { IDailyConstraints, IBaseShift } from "../interfaces/IShift"
 import { Agent } from '../models/Agent'
-import { Shift } from "../models/Shift"
+import { Shift, PrevShift } from "../models/Shift"
 import { Table } from "../models/Table"
 
 import constants from './../constants/index'
@@ -61,7 +61,7 @@ const getAgents = (): IBaseAgent[] => {
     const agents: IBaseAgent[] = []
 
     //loop 30 times and create random Agents
-    for (let i = 0; i < 33; i++) {
+    for (let i = 0; i < 40; i++) {
         const newAgent = new Agent<IBaseAgent>({
             teamId: i,
             name: getName(),
@@ -184,6 +184,7 @@ connectDB()
 
 const pushDB = async () => {
     try {
+        await PrevShift.remove()
         await Shift.remove()
         shifts.map(async shift => {
             const toPush = new Shift(shift)
