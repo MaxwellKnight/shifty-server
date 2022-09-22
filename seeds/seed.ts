@@ -10,8 +10,8 @@ import constants from './../constants/index'
 const { SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY } = constants.weekDays
 
 
-const fnames: String[] = ['Aviel', 'Dima', 'Matan', 'Imri', 'Maxwell', 'Yuval', 'Lior', 'Yuval', 'Shi', 'Avi', 'Ron', 'Yoni', 'Yael', 'Arnon', 'Gamal', 'Beni', "Michael", "Miguel", "Arthur", "Felix", "Burna", "Yehezkel", "Sapir", "Yael", "Dave", "Jesus", "Avraham"]
-const lnames: String[] = ['Elkobi', 'Ivkin', 'Klaiman', 'Elmakayes', 'Knight', 'Haviv', 'Saban', 'Attias', 'Afriat', 'Iluz', 'Yafe', 'Aharoni', 'Yizhak', 'Yeosha', 'Maxwell', 'Yuval', 'Lior', 'Yuval', 'Shi', 'Avi', 'Ron', 'Yoni', 'Martin', 'Arnon', 'Gamal']
+const fnames: String[] = ['איליה', 'אביאל', 'דימה', 'מתן', 'אימרי', 'מקסוול', 'יובל', 'ליאור', 'שי', 'אבי', 'רון', 'יוני', 'רונן', 'ארנון', 'דובי', 'בני', "מיכאל", "מיגל", "ארתור", "פליקס", "יונה", "יחזקאל", "ספיר", "תומר", "שלמה", "טל", "אברהם"]
+const lnames: String[] = ['רוסקלנקר', 'אלקובי', 'איבקין', 'קליימן', 'אלמקייס', 'נייט', 'חביב', 'סבן', 'אטיאס', 'אפריאט', 'אילוז', 'יפה', 'אהרוני', 'יצחק', 'יהושע', 'יפתח', 'כהן', 'שטיין', 'וויל', 'דניאל', 'קלארק', 'חזני', 'אברבנאל', 'מרטין', 'קראוס', 'השופט']
 
 const table = new Map<String, IBaseShift[]>([
     [SUNDAY, []],
@@ -29,7 +29,7 @@ const getName = (): string => {
 }
 
 const getRandomBool = (): boolean => {
-    return Math.random() < .5
+    return Math.random() < .6
 }
 
 const getWeelyCons = (): Map<string, IDailyConstraints> => {
@@ -93,6 +93,7 @@ const getAgents = (): IBaseAgent[] => {
 const getShifts = (): IBaseShift[] => {
     return [
         {
+            title: 'עיניים - בוקר',
             facility: 'EYES',
             type: 'morning',
             limit: 7,
@@ -102,6 +103,7 @@ const getShifts = (): IBaseShift[] => {
             length: 8.5
         },
         {
+            title: 'עיניים - צהריים',
             facility: 'EYES',
             type: 'noon',
             limit: 7,
@@ -111,6 +113,7 @@ const getShifts = (): IBaseShift[] => {
             length: 8.5
         },
         {
+            title: 'עיניים - לילה',
             facility: 'EYES',
             type: 'night',
             limit: 7,
@@ -120,6 +123,7 @@ const getShifts = (): IBaseShift[] => {
             length: 8.5
         },
         {
+            title: 'שיקום',
             facility: 'SHIKUM',
             type: 'morning',
             limit: 2,
@@ -129,6 +133,7 @@ const getShifts = (): IBaseShift[] => {
             length: 12
         },
         {
+            title: 'תקשוב - בוקר',
             facility: 'TIKSHOV',
             type: 'morning',
             limit: 1,
@@ -138,6 +143,7 @@ const getShifts = (): IBaseShift[] => {
             length: 12
         },
         {
+            title: 'תקשוב - לילה',
             facility: 'TIKSHOV',
             type: 'night',
             limit: 1,
@@ -147,6 +153,7 @@ const getShifts = (): IBaseShift[] => {
             length: 12
         },
         {
+            title: 'בינוי - בוקר',
             facility: 'BINUY',
             type: 'morning',
             limit: 1,
@@ -156,6 +163,7 @@ const getShifts = (): IBaseShift[] => {
             length: 12
         },
         {
+            title: 'בינוי - לילה',
             facility: 'BINUY',
             type: 'night',
             limit: 1,
@@ -165,6 +173,7 @@ const getShifts = (): IBaseShift[] => {
             length: 12
         },
         {
+            title: 'משפחות',
             facility: 'MISHPAHOT',
             type: 'morning',
             limit: 1,

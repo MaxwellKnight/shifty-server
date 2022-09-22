@@ -3,6 +3,7 @@ import { IBaseShift, IDailyConstraints } from "../interfaces/IShift"
 
 
 const BaseShiftSchema = new mongoose.Schema<IBaseShift>({
+    title: { type: String, required: true },
     facility: { type: String, required: true },
     type: { type: String, required: true },
     limit: { type: Number, required: true },
@@ -37,6 +38,7 @@ const DailyConstraintsSchema = new mongoose.Schema<IDailyConstraints>({
 })
 
 const PrevShiftSchema = new mongoose.Schema({
+    title: { type: String, required: true },
     facility: { type: String, required: true },
     type: { type: String, required: true },
     limit: { type: Number, required: true },

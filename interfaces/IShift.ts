@@ -1,6 +1,7 @@
 import mongoose from "mongoose"
 
 export interface IBaseShift {
+    title: String,
     facility: string,
     type: string,
     limit: number

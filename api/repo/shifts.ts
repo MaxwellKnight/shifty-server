@@ -27,6 +27,7 @@ const saveAllShifts = async (shifts: any) => {
     try {
         shifts?.forEach(async (shift: any) => {
             const newShift = {
+                title: shift.title,
                 facility: shift.facility,
                 type: shift.type,
                 limit: shift.limit,

@@ -28,7 +28,7 @@ tableRouter.route('/new')
     .post(async (req, res) => {
         try {
             const table: Map<String, IBaseShift[]> = await createTable()
-            res.status(200).send(Array.from(table))
+            res.status(200).send(table)
         } catch (err) {
             console.log(err)
             res.status(500).send(err)
