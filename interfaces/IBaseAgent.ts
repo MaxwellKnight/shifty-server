@@ -16,7 +16,7 @@ export interface IBaseAgent {
         addr?: {
             street: string,
             city: string,
-            zip: string,
+            zip: Number,
         }
     },
     weeklyLimit: {

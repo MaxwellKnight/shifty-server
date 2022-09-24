@@ -29,7 +29,7 @@ const getName = (): string => {
 }
 
 const getRandomBool = (): boolean => {
-    return Math.random() < .6
+    return Math.random() < .7
 }
 
 const getWeelyCons = (): Map<string, IDailyConstraints> => {
@@ -61,7 +61,7 @@ const getAgents = (): IBaseAgent[] => {
     const agents: IBaseAgent[] = []
 
     //loop 30 times and create random Agents
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 45; i++) {
         const newAgent = new Agent<IBaseAgent>({
             teamId: i,
             name: getName(),
@@ -70,8 +70,14 @@ const getAgents = (): IBaseAgent[] => {
             isStudent: getRandomBool(),
             isMobile: getRandomBool(),
             contact: {
-                phone: '0543456421',
-                email: 'maxwell@gmail.com',
+                phone: '0534300641',
+                email: `maxwell${i}@gmail.com`,
+                emergency: '0547490265',
+                addr: {
+                    street: "Yeziat Europe",
+                    city: "Beer Sheba",
+                    zip: 55555
+                }
             },
             weeklyShifts: getWeelyShifts(),
             weeklyLimit: {
@@ -197,18 +203,15 @@ const pushDB = async () => {
         await Shift.remove()
         shifts.map(async shift => {
             const toPush = new Shift(shift)
-            console.log(toPush)
             await toPush.save()
         })
         await Agent.remove()
         agents.map(async agent => {
             const pushAgent = new Agent(agent)
-            console.log(pushAgent)
             await pushAgent.save()
         })
         await Table.remove()
         const pushTable = new Table({ table: table })
-        console.log(pushTable)
         await pushTable.save()
         console.log('success')
         process.exit(0)

@@ -40,6 +40,8 @@ const createTable = async (): Promise<Map<String, IBaseShift[]>> => {
                 shuffleArray(agents)
 
                 const prevShifts: IBaseShift[] | undefined = Shifts?.map(shift => {
+                    if ((key === SATURDAY || key === FRIDAY) && (shift.facility === 'MISHPAHOT' || shift.facility === 'SHIKUM'))
+                        return shift
                     sortByShift(agents!)
                     const finalShift = fillShift(key, value, shift, agents!)
                     value.push(finalShift)
@@ -157,7 +159,7 @@ const validateCons = (key: String, agent: IBaseAgent, shift: IBaseShift): [boole
              * wee keep track of the weekly night count 
              */
             else if (shift.type === NOON || shift.type === NIGHT) {
-                if (!dailyShift?.morning && !dailyShift?.noon && !dailyShift?.night && cons?.noon) {
+                if (!dailyShift?.morning && !dailyShift?.noon && !dailyShift?.night && cons?.noon && cons?.night) {
 
                     switch (shift.type) {
                         case NOON:
