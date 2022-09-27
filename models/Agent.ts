@@ -1,3 +1,4 @@
+import { triggerAsyncId } from 'async_hooks'
 import mongoose from 'mongoose'
 import { IBaseAgent } from "../interfaces/IBaseAgent"
 
@@ -15,6 +16,11 @@ const BaseAgentSchema = new mongoose.Schema<IBaseAgent>({
         type: String,
         required: true,
         lowercase: true,
+    },
+    password: {
+        type: String,
+        required: true,
+        unique: true
     },
     role: {
         type: String,
@@ -39,12 +45,10 @@ const BaseAgentSchema = new mongoose.Schema<IBaseAgent>({
         limit: { type: Number, reqiured: true }
     },
     weeklyConstraints: {
-        type: Map,
-        default: new Map([])
+        type: Map
     },
     weeklyShifts: {
-        type: Map,
-        default: new Map([])
+        type: Map
     },
     nextShift: {
         type: ObjectIdType,

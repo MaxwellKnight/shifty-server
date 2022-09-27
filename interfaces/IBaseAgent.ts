@@ -6,6 +6,7 @@ export interface IBaseAgent {
     teamId: number,
     name: string,
     username: string,
+    password: string,
     role: string,
     isStudent: boolean,
     isMobile: boolean
@@ -24,8 +25,8 @@ export interface IBaseAgent {
         totalCount: number,
         limit: number
     },
-    weeklyConstraints: Map<string, IDailyConstraints>,
-    weeklyShifts: Map<string, IDailyConstraints>,
+    weeklyConstraints?: Map<string, IDailyConstraints>,
+    weeklyShifts?: Map<string, IDailyConstraints>,
     nextShift?: mongoose.Schema.Types.ObjectId,
     prevShifts?: mongoose.Schema.Types.ObjectId[],
     createdAt: Date,

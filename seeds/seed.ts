@@ -1,4 +1,3 @@
-import mongoose from "mongoose"
 import connectDB from "../config/mongoose"
 import { IBaseAgent } from "../interfaces/IBaseAgent"
 import { IDailyConstraints, IBaseShift } from "../interfaces/IShift"
@@ -11,7 +10,7 @@ const { SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY } = const
 
 
 const fnames: String[] = ['איליה', 'אביאל', 'דימה', 'מתן', 'אימרי', 'מקסוול', 'יובל', 'ליאור', 'שי', 'אבי', 'רון', 'יוני', 'רונן', 'ארנון', 'דובי', 'בני', "מיכאל", "מיגל", "ארתור", "פליקס", "יונה", "יחזקאל", "ספיר", "תומר", "שלמה", "טל", "אברהם"]
-const lnames: String[] = ['רוסקלנקר', 'אלקובי', 'איבקין', 'קליימן', 'אלמקייס', 'נייט', 'חביב', 'סבן', 'אטיאס', 'אפריאט', 'אילוז', 'יפה', 'אהרוני', 'יצחק', 'יהושע', 'יפתח', 'כהן', 'שטיין', 'וויל', 'דניאל', 'קלארק', 'חזני', 'אברבנאל', 'מרטין', 'קראוס', 'השופט']
+const lnames: String[] = ['אלחזוב', 'רוסקלנקר', 'אלקובי', 'איבקין', 'קליימן', 'אלמקייס', 'נייט', 'חביב', 'סבן', 'אטיאס', 'אפריאט', 'אילוז', 'יפה', 'אהרוני', 'יצחק', 'יהושע', 'יפתח', 'כהן', 'שטיין', 'וויל', 'דניאל', 'קלארק', 'חזני', 'אברבנאל', 'מרטין', 'קראוס', 'השופט']
 
 const table = new Map<String, IBaseShift[]>([
     [SUNDAY, []],
@@ -66,6 +65,7 @@ const getAgents = (): IBaseAgent[] => {
             teamId: i,
             name: getName(),
             username: `klok${i}`,
+            password: `max${i}`,
             role: 'agent',
             isStudent: getRandomBool(),
             isMobile: getRandomBool(),
@@ -85,8 +85,8 @@ const getAgents = (): IBaseAgent[] => {
                 totalCount: 0,
                 limit: 6
             },
-            nextShift: undefined,
             weeklyConstraints: getWeelyCons(),
+            nextShift: undefined,
             createdAt: new Date,
             updatedAt: new Date
         })

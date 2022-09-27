@@ -1,12 +1,11 @@
 import { IBaseShift, IDailyConstraints } from "../../interfaces/IShift"
 import { IBaseAgent } from "../../interfaces/IBaseAgent"
-import { printTable, shuffleArray, sortByShift } from '../../utils'
+import { shuffleArray, sortByShift } from '../../utils'
 import { getAllShifts, saveAllShifts } from "../repo/shifts"
 import { getAllAgents, updateAllAgents } from '../repo/agents'
 
 import constants from '../../constants/index'
 import { Table } from "../../models/Table"
-import { Shift } from "../../models/Shift"
 const { SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY } = constants.weekDays
 const { MORNING, NOON, NIGHT } = constants.shiftType
 
@@ -93,7 +92,7 @@ const fillShift = (
             if (isOnShift) {
                 //push new shift to the weekly shifts of the agent
                 shift.agents?.push(String(agents[index]._id))
-                agents[index].weeklyShifts.set(String(key), updatedshift)
+                agents[index]?.weeklyShifts?.set(String(key), updatedshift)
             }
         }
         index++
@@ -117,9 +116,9 @@ const fillShift = (
 const validateCons = (key: String, agent: IBaseAgent, shift: IBaseShift): [boolean, IDailyConstraints] => {
 
     if (agent.weeklyShifts && (agent.weeklyLimit.totalCount < agent.weeklyLimit.limit)) {
-        const dailyShift: IDailyConstraints | undefined = agent.weeklyShifts.get(String(key))
-        const workShift: IDailyConstraints | undefined = agent.weeklyShifts.get(String(key))
-        const cons: IDailyConstraints | undefined = agent.weeklyConstraints.get(String(key))
+        const dailyShift: IDailyConstraints | undefined = agent?.weeklyShifts?.get(String(key))
+        const workShift: IDailyConstraints | undefined = agent?.weeklyShifts?.get(String(key))
+        const cons: IDailyConstraints | undefined = agent?.weeklyConstraints?.get(String(key))
 
 
         //Map which helps identifying if the agent worked the day before and which shift he worked

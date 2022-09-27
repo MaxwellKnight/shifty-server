@@ -22,7 +22,7 @@ const printAgentsConstraints = (agents: IBaseAgent[]) => {
     agents.map(agent => {
         if (agent.weeklyShifts) {
             console.log(agent.name)
-            console.table(agent.weeklyConstraints)
+            console.table(agent?.weeklyConstraints)
         }
     })
 }
@@ -45,10 +45,10 @@ const printTable = (table: Map<String, IBaseShift[]>) => {
 const printAgentSummary = (agents: IBaseAgent[]) => {
 
     agents.map(agent => {
-        if (agent.weeklyShifts) {
+        if (agent?.weeklyShifts) {
             console.log('=================')
             console.log(`Name: ${agent.name}\nTotal Shift: ${agent.weeklyLimit.totalCount}\nNight Count: ${agent.weeklyLimit.nightCount}`)
-            for (const [key, value] of agent.weeklyShifts) {
+            for (const [key, value] of agent?.weeklyShifts) {
                 console.log(key, " - ")
                 const toPrint = {
                     value: value,
@@ -70,15 +70,15 @@ const printShiftRejection = (DAY: string, shift: IBaseShift, agents: IBaseAgent[
         [SATURDAY, FRIDAY],
     ])
     agents.forEach(agent => {
-        const day: IDailyConstraints | undefined = agent.weeklyShifts.get(DAY)
+        const day: IDailyConstraints | undefined = agent.weeklyShifts?.get(DAY)
         if (!shift.agents.includes(JSON.stringify(agent._id))) {
             console.log(`Shift count: ${agent.weeklyLimit.totalCount} night count: ${agent.weeklyLimit.nightCount}`)
             console.log(agent.name, DAY, shift.type, shift.facility)
 
-            console.table(agent.weeklyShifts.get(DAY))
+            console.table(agent.weeklyShifts?.get(DAY))
             let shiftbefore: string | undefined = validationMap.get(DAY)
             console.log("Day Before Worked")
-            console.table(agent.weeklyShifts.get(String(shiftbefore)))
+            console.table(agent.weeklyShifts?.get(String(shiftbefore)))
         }
     })
 }
