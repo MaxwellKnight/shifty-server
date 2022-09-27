@@ -27,14 +27,29 @@ const deleteAgentById = async (id: string) => {
     }
 }
 
+const getAgentByUsername = async (username: string) => {
+    try {
+        const agent = await Agent.find({ username: username })
+        if (agent.length > 0) {
+            return { data: agent }
+        }
+        else {
+            return { error: 'this user does not exist' }
+        }
+    } catch (err) {
+        return { error: err }
+    }
+}
+
 
 const getAgentById = async (id: string) => {
     try {
         const agent: IBaseAgent | null = await Agent.findById(id).exec()
-        return agent
+        return { data: agent }
     }
-    catch (e) {
-        console.log(e)
+    catch (err) {
+        console.log(err)
+        return { error: err }
     }
 }
 
@@ -45,9 +60,9 @@ const updateAllAgents = async (agents: IBaseAgent[] | undefined) => {
         })
     } catch (err) {
         console.log(err)
-        return err
+        return { error: err }
     }
 }
 
-export { getAgentById, getAllAgents, deleteAgentById, createAgent, updateAllAgents }
+export { getAgentById, getAllAgents, deleteAgentById, createAgent, updateAllAgents, getAgentByUsername }
 

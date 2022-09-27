@@ -14,8 +14,9 @@ agentRouter.get('/', async (req, res) => {
 
 
 agentRouter.get('/:id', async (req, res) => {
-    const agent: IBaseAgent | null | undefined = await getAgentById(req.params.id)
-    if (agent) res.status(200).send(agent)
+    const { error, data } = await getAgentById(req.params.id)
+    if (data) res.status(200).send(data)
+    else if (error) res.status(500).json({ error })
     else res.status(404).send('could not find agent')
 })
 

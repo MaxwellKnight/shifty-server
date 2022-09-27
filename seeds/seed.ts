@@ -4,6 +4,7 @@ import { IDailyConstraints, IBaseShift } from "../interfaces/IShift"
 import { Agent } from '../models/Agent'
 import { Shift, PrevShift } from "../models/Shift"
 import { Table } from "../models/Table"
+const bcrypt = require("bcrypt")
 
 import constants from './../constants/index'
 const { SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY } = constants.weekDays
@@ -55,13 +56,24 @@ const getWeelyShifts = (): Map<string, IDailyConstraints> => {
     ])
 }
 
+const getPassword = async (password: string) => {
+    try {
+        const salt = await bcrypt.genSalt(10)
+        const newPassword = await bcrypt.hash(password, salt).string()
+        return newPassword
+    } catch (err) {
+        console.log(err)
+        return err
+    }
+}
+
 const getAgents = (): IBaseAgent[] => {
     //create new agents array
     const agents: IBaseAgent[] = []
 
     //loop 30 times and create random Agents
-    for (let i = 0; i < 45; i++) {
-        const newAgent = new Agent<IBaseAgent>({
+    for (let i = 0; i < 5; i++) {
+        const newAgent = new Agent({
             teamId: i,
             name: getName(),
             username: `klok${i}`,
@@ -199,18 +211,18 @@ connectDB()
 
 const pushDB = async () => {
     try {
-        await PrevShift.remove()
-        await Shift.remove()
+        await PrevShift.deleteMany()
+        await Shift.deleteMany()
         shifts.map(async shift => {
             const toPush = new Shift(shift)
             await toPush.save()
         })
-        await Agent.remove()
+        await Agent.deleteMany()
         agents.map(async agent => {
             const pushAgent = new Agent(agent)
             await pushAgent.save()
         })
-        await Table.remove()
+        await Table.deleteMany()
         const pushTable = new Table({ table: table })
         await pushTable.save()
         console.log('success')
@@ -221,8 +233,21 @@ const pushDB = async () => {
     }
 }
 
+const deleteAllAgentsCons = async () => {
+    try {
+        const agents: IBaseAgent[] = await Agent.find()
+        agents.forEach(async (agent) => {
+            const { weeklyConstraints, ...data } = agent
+            console.log(data)
+            return
+        })
+    } catch (err) {
+        console.log(err)
+    }
+}
 
-pushDB()
+
+deleteAllAgentsCons()
 
 
 

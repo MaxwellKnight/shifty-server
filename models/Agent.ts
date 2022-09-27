@@ -19,8 +19,6 @@ const BaseAgentSchema = new mongoose.Schema<IBaseAgent>({
     },
     password: {
         type: String,
-        required: true,
-        unique: true
     },
     role: {
         type: String,

@@ -29,8 +29,8 @@ export interface IBaseAgent {
     weeklyShifts?: Map<string, IDailyConstraints>,
     nextShift?: mongoose.Schema.Types.ObjectId,
     prevShifts?: mongoose.Schema.Types.ObjectId[],
-    createdAt: Date,
-    updatedAt: Date
+    createdAt?: Date,
+    updatedAt?: Date
 }
 
 export interface IAdminAgent extends IBaseAgent {
