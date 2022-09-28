@@ -1,53 +1,31 @@
+import {
+    createAgentController,
+    deleteAgentByIdController,
+    getAgentByIdController,
+    getAgentsController,
+    updateAgentController,
+    updateAllAgentsController
+} from '../controllers/agents'
 import express from 'express'
-import { IBaseAgent } from '../../interfaces/IBaseAgent'
-import { createAgent, deleteAgentById, getAgentById, getAllAgents } from '../repo/agents'
 const agentRouter = express.Router()
 
-agentRouter.get('/', async (req, res) => {
-    try {
-        const agents: IBaseAgent[] | undefined = await getAllAgents()
-        res.status(200).send(agents)
-    } catch (e) {
-        console.log(e)
-    }
-})
 
+//GET ALL AGENTS
+agentRouter.get('/', getAgentsController)
 
-agentRouter.get('/:id', async (req, res) => {
-    const { error, data } = await getAgentById(req.params.id)
-    if (data) res.status(200).send(data)
-    else if (error) res.status(500).json({ error })
-    else res.status(404).send('could not find agent')
-})
+//GET ONE AGENT BY ID
+agentRouter.get('/:id', getAgentByIdController)
 
-agentRouter.patch('/', (req, res) => {
-    res.send(`<h1>Updated Agent</h1>`)
-})
+//UPDATE SIGNLE AGENT
+agentRouter.patch('/:id', updateAgentController)
 
+//UPDATE ALL AGENTS
+agentRouter.patch('/all', updateAllAgentsController)
 
-agentRouter.patch('/all', (req, res) => {
-    res.send(`<h1>Updated All Agents</h1>`)
-})
+//CREATE AGENT
+agentRouter.post('/', createAgentController)
 
-
-agentRouter.post('/', async (req, res) => {
-    try {
-        const newAgent = await createAgent(req.body)
-        res.send(newAgent)
-    } catch (err) {
-        res.send(err)
-    }
-})
-
-
-agentRouter.delete('/:id', async (req, res) => {
-    try {
-        await deleteAgentById(req.params.id)
-        res.send('Agent Deleted')
-    }
-    catch (e) {
-        console.log(e)
-    }
-})
+//DELETE SINGLE AGENT
+agentRouter.delete('/:id', deleteAgentByIdController)
 
 export default agentRouter

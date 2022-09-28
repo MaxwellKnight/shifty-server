@@ -1,47 +1,28 @@
-import { table } from 'console'
 import express from 'express'
-import { IBaseShift } from '../../interfaces/IShift'
-import { getAllTables, getCurrentTable } from '../repo/table'
-import createTable from '../services/table'
+import {
+    createTableController,
+    deleteTableByIdController,
+    getAllTablesController,
+    getCurrentTableController,
+    getTableByIdController
+} from '../controllers/table'
 
 const tableRouter = express.Router()
 
-tableRouter.get('/', async (req, res) => {
-    try {
-        const tables: any[] | undefined = await getAllTables()
-        res.status(200).send(tables)
-    } catch (e) {
-        console.log(e)
-    }
-})
+//GET ALL TABLES
+tableRouter.get('/', getAllTablesController)
 
-tableRouter.route('/new')
-    .get(async (req, res) => {
-        try {
-            const table = await getCurrentTable()
-            res.status(200).send(table)
-        } catch (err) {
-            console.log(err)
-            res.status(500).send(err)
-        }
-    })
-    .post(async (req, res) => {
-        try {
-            const table: Map<String, IBaseShift[]> = await createTable()
-            res.status(200).send(table)
-        } catch (err) {
-            console.log(err)
-            res.status(500).send(err)
-        }
-    })
+//GET CURRENT LAST TABLE
+tableRouter.get('/new', getCurrentTableController)
 
-tableRouter.route('/:id')
-    .get((req, res) => {
-        res.send(`<h1>Table with id: ${req.params.id}</h1>`)
-    })
-    .delete((req, res) => {
-        res.send(`<h1>Table with id: ${req.params.id}, was deleted</h1>`)
-    })
+//CREATE A NEW TABLE
+tableRouter.post('/new', createTableController)
+
+//GET TABLE BY ID
+tableRouter.get('/:id', getTableByIdController)
+
+//DELETE ONE TABLE
+tableRouter.delete('/:id', deleteTableByIdController)
 
 
 

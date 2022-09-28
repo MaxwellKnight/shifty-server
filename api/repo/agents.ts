@@ -34,7 +34,7 @@ const getAgentByUsername = async (username: string) => {
             return { data: agent }
         }
         else {
-            return { error: 'this user does not exist' }
+            return { error: 'username or password are incorrect' }
         }
     } catch (err) {
         return { error: err }

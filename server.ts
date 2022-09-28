@@ -1,8 +1,9 @@
 require('dotenv').config()
 import express from 'express'
-import setHeaders from './middleware/set-headers'
-import { agentRouter, loginRouter, registerRouter, shiftsRouter, tableRouter } from './api'
+import setHeaders from './middleware/setHeaders'
+import { agentRouter, authRouter, shiftsRouter, tableRouter } from './api'
 import connectDB from './config/mongoose'
+import errorHandler from './middleware/errorHandler'
 const cors = require('cors')
 
 
@@ -14,14 +15,14 @@ const port = process.env.PORT || 8000
 app.use(cors())
 app.use(setHeaders)
 app.use(express.json())
+app.use('/auth', authRouter)
 app.use('/agents', agentRouter)
 app.use('/shifts', shiftsRouter)
 app.use('/tables', tableRouter)
-app.use('/register', registerRouter)
-app.use('/login', loginRouter)
+app.use(errorHandler)
 
 app.listen(port, () => {
     connectDB()
-    console.log(`server listening on port ${port}...`)
+    console.log(`server listening on port ${port}`)
 })
 
