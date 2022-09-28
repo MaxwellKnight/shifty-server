@@ -1,4 +1,4 @@
-import { createAgent, deleteAgentById, getAgentById, getAllAgents } from "../repo/agents"
+import { deleteAgentById, getAgentById, getAllAgents, updateAgent } from "../repo/agents"
 import { createError } from "../../utils/error"
 import { IBaseAgent } from "../../interfaces/IBaseAgent"
 
@@ -7,7 +7,6 @@ export const getAgentsController = async (req: any, res: any, next: any) => {
         const agents: IBaseAgent[] | undefined = await getAllAgents()
         res.status(200).send(agents)
     } catch (error) {
-        console.log(error)
         next(createError())
     }
 }
@@ -22,28 +21,27 @@ export const getAgentByIdController = async (req: any, res: any, next: any) => {
         else
             next(error)
     } catch (error) {
-        console.log(error)
         next(createError())
     }
 }
 
 export const updateAgentController = async (req: any, res: any, next: any) => {
-    res.status(200).json({ message: 'update page controller' })
+    try {
+        const { id } = req.params
+        const { error, data } = await updateAgent(id, req.body)
+        if (error)
+            next(createError(400), 'could not complete process')
+
+        res.status(200).json({ data })
+    } catch (error) {
+        next(createError(501, JSON.stringify(error)))
+    }
 }
 
 export const updateAllAgentsController = async (req: any, res: any, next: any) => {
 
 }
 
-export const createAgentController = async (req: any, res: any, next: any) => {
-    try {
-        const newAgent = await createAgent(req.body)
-        res.status(201).send(newAgent)
-    } catch (error) {
-        console.log(error)
-        next(createError())
-    }
-}
 
 export const deleteAgentByIdController = async (req: any, res: any, next: any) => {
     try {
@@ -51,7 +49,6 @@ export const deleteAgentByIdController = async (req: any, res: any, next: any) =
         res.status(200).send('Agent Deleted')
     }
     catch (error) {
-        console.log(error)
         next(createError())
     }
 }

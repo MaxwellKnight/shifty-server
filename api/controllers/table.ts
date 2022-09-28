@@ -8,7 +8,6 @@ export const getAllTablesController = async (req: any, res: any, next: any) => {
         const tables: any[] | undefined = await getAllTables()
         res.status(200).send(tables)
     } catch (e) {
-        console.log(e)
         return next(createError())
     }
 }
@@ -18,7 +17,6 @@ export const getCurrentTableController = async (req: any, res: any, next: any) =
         const table = await getCurrentTable()
         res.status(200).send(table)
     } catch (err) {
-        console.log(err)
         return next(createError())
 
     }
@@ -29,7 +27,6 @@ export const createTableController = async (req: any, res: any, next: any) => {
         const table: Map<String, IBaseShift[]> = await createTable()
         res.status(200).send(table)
     } catch (err) {
-        console.log(err)
         return next(createError())
     }
 }

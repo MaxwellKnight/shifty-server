@@ -29,9 +29,9 @@ const deleteAgentById = async (id: string) => {
 
 const getAgentByUsername = async (username: string) => {
     try {
-        const agent = await Agent.find({ username: username })
-        if (agent.length > 0) {
-            return { data: agent }
+        const agent = await Agent.findOne({ username: username })
+        if (agent) {
+            return { agent }
         }
         else {
             return { error: 'username or password are incorrect' }
@@ -53,10 +53,20 @@ const getAgentById = async (id: string) => {
     }
 }
 
+const updateAgent = async (id: string, data: any) => {
+    try {
+        const newAgent = await Agent.findByIdAndUpdate(id, { $set: { ...data } }, { new: true })
+        return { data: newAgent }
+    } catch (err) {
+        console.log(err)
+        return { error: err }
+    }
+}
+
 const updateAllAgents = async (agents: IBaseAgent[] | undefined) => {
     try {
         agents!.map(async (agent: IBaseAgent) => {
-            await Agent.findByIdAndUpdate(agent._id, { weeklyShifts: agent.weeklyShifts, weeklyLimit: agent.weeklyLimit })
+            await Agent.findByIdAndUpdate(agent?._id, { weeklyShifts: agent.weeklyShifts, weeklyLimit: agent.weeklyLimit })
         })
     } catch (err) {
         console.log(err)
@@ -64,5 +74,5 @@ const updateAllAgents = async (agents: IBaseAgent[] | undefined) => {
     }
 }
 
-export { getAgentById, getAllAgents, deleteAgentById, createAgent, updateAllAgents, getAgentByUsername }
+export { getAgentById, getAllAgents, deleteAgentById, createAgent, updateAllAgents, getAgentByUsername, updateAgent }
 

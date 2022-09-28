@@ -1,20 +1,30 @@
 import { getAgentByUsername } from "../repo/agents"
 import { IBaseAgent } from "../../interfaces/IBaseAgent"
 import { createAgentDb } from "../repo/auth"
+import jwt, { Secret } from 'jsonwebtoken'
 const bcrypt = require("bcrypt")
+require('dotenv').config()
+
+const SECRET_KEY: Secret = process.env.JWT || '123456'
 
 const login = async (username: string, password: string) => {
     try {
-        const { error, data }: any = await getAgentByUsername(username)
+        const { error, agent }: any = await getAgentByUsername(username)
 
         if (!error) {
-            if ((data[0].password === password && data[0].username === username)) {
-                const agent = {
-                    _id: data[0]._id,
-                    role: data[0].role,
-                    email: data[0]?.contact?.email
+            const isPasswordValid = await bcrypt.compare(String(password), agent.password)
+            if (isPasswordValid) {
+                const token = jwt.sign({
+                    id: agent?.id,
+                    role: agent?.role
+                }, SECRET_KEY)
+                const newAgent = {
+                    _id: agent?._id,
+                    username: agent?.username,
+                    email: agent?.contact?.email,
+                    role: agent?.role,
                 }
-                return { data: agent }
+                return { data: newAgent, token }
             }
             else {
                 return { error: 'username or password are incorrect' }
@@ -27,7 +37,7 @@ const login = async (username: string, password: string) => {
     }
 }
 
-const createAgent = async ({
+const register = async ({
     teamId,
     name,
     username,
@@ -61,4 +71,4 @@ const createAgent = async ({
     }
 }
 
-export { login, createAgent }
+export { login, register }

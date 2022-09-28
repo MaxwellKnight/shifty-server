@@ -1,4 +1,5 @@
 import express from 'express'
+import { verifyToken, verifyAdmin } from '../../middleware/auth'
 import {
     createTableController,
     deleteTableByIdController,
@@ -10,19 +11,19 @@ import {
 const tableRouter = express.Router()
 
 //GET ALL TABLES
-tableRouter.get('/', getAllTablesController)
+tableRouter.get('/', verifyToken, getAllTablesController)
 
 //GET CURRENT LAST TABLE
-tableRouter.get('/new', getCurrentTableController)
+tableRouter.get('/new', verifyToken, getCurrentTableController)
 
 //CREATE A NEW TABLE
-tableRouter.post('/new', createTableController)
+tableRouter.post('/new', verifyToken, verifyAdmin, createTableController)
 
 //GET TABLE BY ID
-tableRouter.get('/:id', getTableByIdController)
+tableRouter.get('/:id', verifyToken, getTableByIdController)
 
 //DELETE ONE TABLE
-tableRouter.delete('/:id', deleteTableByIdController)
+tableRouter.delete('/:id', verifyToken, verifyAdmin, deleteTableByIdController)
 
 
 

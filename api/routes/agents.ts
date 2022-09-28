@@ -1,5 +1,4 @@
 import {
-    createAgentController,
     deleteAgentByIdController,
     getAgentByIdController,
     getAgentsController,
@@ -7,25 +6,24 @@ import {
     updateAllAgentsController
 } from '../controllers/agents'
 import express from 'express'
+import { verifyAdmin, verifyAgent, verifyToken } from '../../middleware/auth'
+
 const agentRouter = express.Router()
 
-
 //GET ALL AGENTS
-agentRouter.get('/', getAgentsController)
+agentRouter.get('/', verifyToken, getAgentsController)
 
 //GET ONE AGENT BY ID
-agentRouter.get('/:id', getAgentByIdController)
+agentRouter.get('/:id', verifyToken, getAgentByIdController)
 
 //UPDATE SIGNLE AGENT
-agentRouter.patch('/:id', updateAgentController)
+agentRouter.patch('/:id', verifyToken, verifyAgent, updateAgentController)
 
 //UPDATE ALL AGENTS
-agentRouter.patch('/all', updateAllAgentsController)
+agentRouter.patch('/all', verifyToken, verifyAdmin, updateAllAgentsController)
 
-//CREATE AGENT
-agentRouter.post('/', createAgentController)
 
 //DELETE SINGLE AGENT
-agentRouter.delete('/:id', deleteAgentByIdController)
+agentRouter.delete('/:id', verifyToken, verifyAgent, verifyAdmin, deleteAgentByIdController)
 
 export default agentRouter
