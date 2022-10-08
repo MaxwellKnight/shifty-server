@@ -4,9 +4,11 @@ import { Shift, PrevShift } from "../../models/Shift"
 const getAllShifts = async () => {
     try {
         const shifts: IBaseShift[] = await Shift.find()
-        return shifts
+        if (shifts) return { data: shifts }
+        else return { error: 'could not find shift' }
     } catch (err) {
         console.log(err)
+        return err
     }
 }
 const getPrevShifts = async () => {
@@ -14,10 +16,11 @@ const getPrevShifts = async () => {
         const shifts: any = await PrevShift.find()
             .populate('agents')
         console.log(shifts.agents)
-        if (shifts) return shifts
-        else return []
-    } catch (err) {
-        console.log(err)
+        if (shifts) return { data: shifts }
+        else return { error: 'could not complete process' }
+    } catch (error) {
+        console.log(error)
+        return { error }
     }
 }
 
@@ -38,20 +41,21 @@ const saveAllShifts = async (shifts: any) => {
             }
             await PrevShift.create(newShift)
         })
-        return true
-    } catch (err) {
-        console.log(err)
+        return { data: true }
+    } catch (error) {
+        console.log(error)
+        return { error }
     }
 }
 
 const getSingleShift = async (id: string) => {
     try {
         const shift = await PrevShift.findOne({ _id: id })
-        if (shift) return shift
-        else return new Error('Could find shift')
-    } catch (err) {
-        console.log(err)
-        return new Error('Error trying to fetch shift')
+        if (shift) return { data: shift }
+        else return { error: 'could not find shift' }
+    } catch (error) {
+        console.log(error)
+        return { error }
     }
 }
 

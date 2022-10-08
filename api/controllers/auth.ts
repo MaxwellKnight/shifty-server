@@ -22,7 +22,7 @@ export const registerController = async (req: any, res: any, next: any) => {
                 .status(201)
                 .json({ data })
         }
-        else if (error) next(createError(400, 'could not complete the process'))
+        else if (error) next(createError(400))
     } catch (error) {
         next(createError())
     }

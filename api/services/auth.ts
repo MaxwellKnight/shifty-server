@@ -14,10 +14,8 @@ const login = async (username: string, password: string) => {
         if (!error) {
             const isPasswordValid = await bcrypt.compare(String(password), agent.password)
             if (isPasswordValid) {
-                const token = jwt.sign({
-                    id: agent?.id,
-                    role: agent?.role
-                }, SECRET_KEY)
+                const token = jwt.sign({ id: agent?.id, role: agent?.role }, SECRET_KEY)
+
                 const newAgent = {
                     _id: agent?._id,
                     username: agent?.username,
@@ -30,10 +28,10 @@ const login = async (username: string, password: string) => {
                 return { error: 'username or password are incorrect' }
             }
         }
-        return { error: error }
-    } catch (err) {
-        console.log(err)
-        return { error: err }
+        return { error }
+    } catch (error) {
+        console.log(error)
+        return { error }
     }
 }
 

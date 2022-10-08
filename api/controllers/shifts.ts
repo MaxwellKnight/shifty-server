@@ -5,8 +5,9 @@ import { getAllShifts, getPrevShifts, getSingleShift } from "../repo/shifts"
 
 export const getAllShiftsController = async (req: any, res: any, next: any) => {
     try {
-        const shifts: IBaseShift[] | undefined = await getAllShifts()
-        if (shifts) res.status(200).json(shifts)
+        const { error, data }: any = await getAllShifts()
+        if (data) res.status(200).json(data)
+        else if (error) next(createError())
     } catch (error) {
         next(createError())
     }
@@ -14,8 +15,9 @@ export const getAllShiftsController = async (req: any, res: any, next: any) => {
 
 export const getAllPrevShiftsController = async (req: any, res: any, next: any) => {
     try {
-        const shifts = await getPrevShifts()
-        if (shifts) res.status(200).json(shifts)
+        const { error, data } = await getPrevShifts()
+        if (data) res.status(200).json(data)
+        else if (error) next(createError(400))
     } catch (error) {
         next(createError())
     }
@@ -23,9 +25,9 @@ export const getAllPrevShiftsController = async (req: any, res: any, next: any) 
 
 export const getShiftByIdController = async (req: any, res: any, next: any) => {
     try {
-        const shift = await getSingleShift(req.params.id)
-        if (shift) res.status(200).send(shift)
-        else res.status(404).json({ error: 'could not find shift', messgae: 'Not found' })
+        const { error, data }: any = await getSingleShift(req.params.id)
+        if (data) res.status(200).send(data)
+        else if (error) next(createError(400))
     } catch (err) {
         next(createError())
     }

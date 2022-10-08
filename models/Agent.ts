@@ -1,6 +1,8 @@
 import { triggerAsyncId } from 'async_hooks'
 import mongoose from 'mongoose'
 import { IBaseAgent } from "../interfaces/IBaseAgent"
+import constants from './../constants/index'
+const { SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY } = constants.weekDays
 
 const ObjectIdType = mongoose.Schema.Types.ObjectId
 
@@ -43,7 +45,16 @@ const BaseAgentSchema = new mongoose.Schema<IBaseAgent>({
         limit: { type: Number, reqiured: true }
     },
     weeklyConstraints: {
-        type: Map
+        type: Map,
+        default: new Map([
+            [SUNDAY, { morning: true, noon: true, night: true, notes: '' }],
+            [MONDAY, { morning: true, noon: true, night: true, notes: '' }],
+            [TUESDAY, { morning: true, noon: true, night: true, notes: '' }],
+            [WEDNESDAY, { morning: true, noon: true, night: true, notes: '' }],
+            [THURSDAY, { morning: true, noon: true, night: true, notes: '' }],
+            [FRIDAY, { morning: true, noon: true, night: true, notes: '' }],
+            [SATURDAY, { morning: true, noon: true, night: true, notes: '' }],
+        ])
     },
     weeklyShifts: {
         type: Map

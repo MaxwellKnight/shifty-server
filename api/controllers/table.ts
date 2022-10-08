@@ -5,18 +5,22 @@ import createTable from "../services/table"
 
 export const getAllTablesController = async (req: any, res: any, next: any) => {
     try {
-        const tables: any[] | undefined = await getAllTables()
-        res.status(200).send(tables)
-    } catch (e) {
+        const { error, data } = await getAllTables()
+        if (data) res.status(200).send(data)
+        else if (error) next(createError(400, 'could not complete process'))
+    } catch (error) {
+        console.log(error)
         return next(createError())
     }
 }
 
 export const getCurrentTableController = async (req: any, res: any, next: any) => {
     try {
-        const table = await getCurrentTable()
-        res.status(200).send(table)
-    } catch (err) {
+        const { error, data }: any = await getCurrentTable()
+        if (data) res.status(200).send(data)
+        else if (error) next(createError(400, error))
+    } catch (error) {
+        console.log(error)
         return next(createError())
 
     }
@@ -25,8 +29,10 @@ export const getCurrentTableController = async (req: any, res: any, next: any) =
 export const createTableController = async (req: any, res: any, next: any) => {
     try {
         const table: Map<String, IBaseShift[]> = await createTable()
-        res.status(200).send(table)
-    } catch (err) {
+        if (table) res.status(200).send(table)
+        else next(createError(400, 'could not create table'))
+    } catch (error) {
+        console.log(error)
         return next(createError())
     }
 }

@@ -20,6 +20,7 @@ export interface IDailyConstraints {
     noon: boolean,
     night: boolean,
     notes?: string,
+    id?: string,
     createdAt?: Date,
     updatedAt?: Date
 }

@@ -35,10 +35,10 @@ const createTable = async (): Promise<Map<String, IBaseShift[]>> => {
 
         for (const [key, value] of table) {
             if (!value.length) {
-                const Shifts: IBaseShift[] | undefined = await getAllShifts()
+                const { error, data: shifts }: any = await getAllShifts()
                 shuffleArray(agents)
 
-                const prevShifts: IBaseShift[] | undefined = Shifts?.map(shift => {
+                const prevShifts = shifts?.map((shift: IBaseShift) => {
                     if ((key === SATURDAY || key === FRIDAY) && (shift.facility === 'MISHPAHOT' || shift.facility === 'SHIKUM'))
                         return shift
                     sortByShift(agents!)
