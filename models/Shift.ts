@@ -27,6 +27,7 @@ const DailyConstraintsSchema = new mongoose.Schema<IDailyConstraints>({
     morning: { type: Boolean, required: true },
     noon: { type: Boolean, required: true },
     night: { type: Boolean, required: true },
+    notes: { type: String, required: false },
     createdAt: {
         type: Date,
         default: () => Date.now()

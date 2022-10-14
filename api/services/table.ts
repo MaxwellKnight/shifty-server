@@ -1,11 +1,12 @@
 import { IBaseShift, IDailyConstraints } from "../../interfaces/IShift"
 import { IBaseAgent } from "../../interfaces/IBaseAgent"
-import { shuffleArray, sortByShift } from '../../utils'
+import { getDatesArray, shuffleArray, sortByShift } from '../../utils'
 import { getAllShifts, saveAllShifts } from "../repo/shifts"
 import { getAllAgents, updateAllAgents } from '../repo/agents'
 
 import constants from '../../constants/index'
 import { Table } from "../../models/Table"
+import { createTableRepo, getAllTables } from "../repo/table"
 const { SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY } = constants.weekDays
 const { MORNING, NOON, NIGHT } = constants.shiftType
 
@@ -19,7 +20,7 @@ const { MORNING, NOON, NIGHT } = constants.shiftType
  *      Array : with new weekly shiftnps at indx 0 
  *     
  */
-const createTable = async (): Promise<Map<String, IBaseShift[]>> => {
+const createTable = async (startDate: Date, endDate: Date): Promise<Map<String, IBaseShift[]>> => {
 
     const table = new Map<String, IBaseShift[]>([
         [SUNDAY, []],
@@ -32,7 +33,8 @@ const createTable = async (): Promise<Map<String, IBaseShift[]>> => {
     ])
     try {
         const agents: IBaseAgent[] | undefined = await getAllAgents()
-
+        const datesArray: Date[] = getDatesArray(startDate, endDate)
+        let datesIndex: number = 0
         for (const [key, value] of table) {
             if (!value.length) {
                 const { error, data: shifts }: any = await getAllShifts()
@@ -43,19 +45,22 @@ const createTable = async (): Promise<Map<String, IBaseShift[]>> => {
                         return shift
                     sortByShift(agents!)
                     const finalShift = fillShift(key, value, shift, agents!)
+                    finalShift.date = new Date(datesArray[datesIndex])
                     value.push(finalShift)
                     return shift
                 })
+                datesIndex++
+                if (datesIndex > datesArray.length - 1) datesIndex = 0
                 await saveAllShifts(prevShifts)
             }
 
         }
-        await updateAllAgents(agents)
+        const newTable = await createTableRepo({ startDate, endDate, table })
+        await updateAllAgents(agents, String(newTable._id))
         //Arranged table and all agents
     } catch (err) {
         console.log(err)
     }
-    await Table.create({ table })
     return table
 }
 
@@ -148,6 +153,7 @@ const validateCons = (key: String, agent: IBaseAgent, shift: IBaseShift): [boole
                         return [false, workShift]
 
                     agent.weeklyLimit.totalCount++
+                    workShift!.notes = shift.title.split("-")[0]
                     workShift!.morning = true
                     return [true, workShift]
                 }
@@ -164,11 +170,13 @@ const validateCons = (key: String, agent: IBaseAgent, shift: IBaseShift): [boole
                         case NOON:
                             agent.weeklyLimit.totalCount++
                             workShift!.noon = true
+                            workShift!.notes = shift.title.split("-")[0]
                             break
                         case NIGHT:
                             if (agent.weeklyLimit.nightCount >= 2) break
                             agent.weeklyLimit.totalCount++
                             agent.weeklyLimit.nightCount++
+                            workShift!.notes = shift.title.split("-")[0]
                             workShift!.night = true
                             break
                     }

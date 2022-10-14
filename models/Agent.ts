@@ -1,10 +1,17 @@
-import { triggerAsyncId } from 'async_hooks'
 import mongoose from 'mongoose'
 import { IBaseAgent } from "../interfaces/IBaseAgent"
+import { IConstraints } from '../interfaces/IConstraints'
 import constants from './../constants/index'
+import { IDailyConstraints } from './Shift'
 const { SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY } = constants.weekDays
 
 const ObjectIdType = mongoose.Schema.Types.ObjectId
+
+const ConstraintsSchema = new mongoose.Schema<IConstraints>({
+    agentId: { type: String, required: true },
+    tableId: { type: String, required: true },
+    constraints: { type: Map<string, IDailyConstraints>, required: true },
+})
 
 const BaseAgentSchema = new mongoose.Schema<IBaseAgent>({
     teamId: { type: Number, required: true },
@@ -57,7 +64,16 @@ const BaseAgentSchema = new mongoose.Schema<IBaseAgent>({
         ])
     },
     weeklyShifts: {
-        type: Map
+        type: Map,
+        default: new Map([
+            [SUNDAY, { morning: false, noon: false, night: false, notes: '' }],
+            [MONDAY, { morning: false, noon: false, night: false, notes: '' }],
+            [TUESDAY, { morning: false, noon: false, night: false, notes: '' }],
+            [WEDNESDAY, { morning: false, noon: false, night: false, notes: '' }],
+            [THURSDAY, { morning: false, noon: false, night: false, notes: '' }],
+            [FRIDAY, { morning: false, noon: false, night: false, notes: '' }],
+            [SATURDAY, { morning: false, noon: false, night: false, notes: '' }],
+        ])
     },
     nextShift: {
         type: ObjectIdType,
@@ -77,5 +93,6 @@ const BaseAgentSchema = new mongoose.Schema<IBaseAgent>({
 
 
 const Agent = mongoose.model('Agent', BaseAgentSchema)
+const Constraints = mongoose.model('Constraints', ConstraintsSchema)
 
-export { BaseAgentSchema, Agent }
+export { BaseAgentSchema, Agent, Constraints, ConstraintsSchema }

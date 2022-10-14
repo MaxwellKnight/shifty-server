@@ -1,7 +1,8 @@
+import { Response, Request, NextFunction } from 'express'
 import { createError } from "../../utils/error"
 import { register, login } from "../services/auth"
 
-export const loginController = async (req: any, res: any, next: any) => {
+export const loginController = async (req: Request, res: Response, next: NextFunction) => {
     const { username, password } = req.body
     if (!(username && password)) return next(createError(400, 'missing credentials'))
 
@@ -14,7 +15,7 @@ export const loginController = async (req: any, res: any, next: any) => {
         .json({ data })
 }
 
-export const registerController = async (req: any, res: any, next: any) => {
+export const registerController = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { error, data } = await register(req.body)
         if (data) {

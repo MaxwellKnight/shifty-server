@@ -5,7 +5,8 @@ import {
     deleteTableByIdController,
     getAllTablesController,
     getCurrentTableController,
-    getTableByIdController
+    getTableByIdController,
+    confirmTableController
 } from '../controllers/table'
 
 const tableRouter = express.Router()
@@ -18,6 +19,9 @@ tableRouter.get('/new', verifyToken, getCurrentTableController)
 
 //CREATE A NEW TABLE
 tableRouter.post('/new', verifyToken, verifyAdmin, createTableController)
+
+//CONFIRM A NEW TABLE
+tableRouter.post('/new/confirm/:id', verifyToken, verifyAdmin, confirmTableController)
 
 //GET TABLE BY ID
 tableRouter.get('/:id', verifyToken, getTableByIdController)

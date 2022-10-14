@@ -1,5 +1,6 @@
 import { IBaseAgent } from "../../interfaces/IBaseAgent"
-import { Agent } from "../../models/Agent"
+import { IDailyConstraints } from "../../interfaces/IShift"
+import { Agent, Constraints } from "../../models/Agent"
 
 const createAgent = async (agent: IBaseAgent) => {
     try {
@@ -63,11 +64,21 @@ const updateAgent = async (id: string, data: any) => {
     }
 }
 
-const updateAllAgents = async (agents: IBaseAgent[] | undefined) => {
+const updateAllAgents = async (agents: IBaseAgent[] | undefined, tableId: string) => {
+    const cons = new Map<string, IDailyConstraints>([
+        ['SUN', { morning: true, noon: true, night: true, notes: '' }],
+        ['MON', { morning: true, noon: true, night: true, notes: '' }],
+        ['TUE', { morning: true, noon: true, night: true, notes: '' }],
+        ['WED', { morning: true, noon: true, night: true, notes: '' }],
+        ['THU', { morning: true, noon: true, night: true, notes: '' }],
+        ['FRI', { morning: true, noon: true, night: true, notes: '' }],
+        ['SAT', { morning: true, noon: true, night: true, notes: '' }],
+    ])
     try {
-        agents!.map(async (agent: IBaseAgent) => {
-            await Agent.findByIdAndUpdate(agent?._id, { weeklyShifts: agent.weeklyShifts, weeklyLimit: agent.weeklyLimit })
-        })
+        Promise.all(agents!.map(async (agent: IBaseAgent) => {
+            await Agent.findByIdAndUpdate(agent?._id, { weeklyShifts: agent.weeklyShifts, weeklyLimit: agent.weeklyLimit, weeklyConstraints: cons })
+            await Constraints.create({ agentId: agent._id, tableId: tableId, constraints: agent.weeklyConstraints })
+        }))
     } catch (err) {
         console.log(err)
         return { error: err }

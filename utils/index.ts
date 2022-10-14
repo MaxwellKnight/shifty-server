@@ -24,5 +24,18 @@ const sortByShift = (agents: IBaseAgent[]) => {
         }
     }
 }
+const getDatesArray = function (start: Date, end: Date) {
+    const arr: Date[] = []
+    for (const dt = new Date(start); dt <= new Date(end); dt.setDate(dt.getDate() + 1)) {
+        arr.push(new Date(dt));
+    }
+    return arr;
+};
 
-export { shuffleArray, sortByShift, printAgentSummary, printAgentsConstraints, printAgentsShiftCount, printTable }
+const daysCount = (startDate: Date, endDate: Date) => {
+    const difference = endDate.getTime() - startDate.getTime()
+    const TotalDays = Math.ceil(difference / (1000 * 3600 * 24))
+    return TotalDays
+}
+
+export { shuffleArray, sortByShift, printAgentSummary, printAgentsConstraints, printAgentsShiftCount, printTable, getDatesArray, daysCount }

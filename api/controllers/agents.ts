@@ -1,8 +1,9 @@
+import { Response, Request, NextFunction } from 'express'
 import { deleteAgentById, getAgentById, getAllAgents, updateAgent } from "../repo/agents"
 import { createError } from "../../utils/error"
 import { IBaseAgent } from "../../interfaces/IBaseAgent"
 
-export const getAgentsController = async (req: any, res: any, next: any) => {
+export const getAgentsController = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const agents: IBaseAgent[] | undefined = await getAllAgents()
         res.status(200).send(agents)
@@ -11,7 +12,7 @@ export const getAgentsController = async (req: any, res: any, next: any) => {
     }
 }
 
-export const getAgentByIdController = async (req: any, res: any, next: any) => {
+export const getAgentByIdController = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { error, data } = await getAgentById(req.params.id)
         if (data) {
@@ -27,7 +28,7 @@ export const getAgentByIdController = async (req: any, res: any, next: any) => {
     }
 }
 
-export const updateAgentController = async (req: any, res: any, next: any) => {
+export const updateAgentController = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params
         const { error, data } = await updateAgent(id, req.body)
@@ -40,12 +41,12 @@ export const updateAgentController = async (req: any, res: any, next: any) => {
     }
 }
 
-export const updateAllAgentsController = async (req: any, res: any, next: any) => {
+export const updateAllAgentsController = async (req: Request, res: Response, next: NextFunction) => {
 
 }
 
 
-export const deleteAgentByIdController = async (req: any, res: any, next: any) => {
+export const deleteAgentByIdController = async (req: Request, res: Response, next: NextFunction) => {
     try {
         await deleteAgentById(req.params.id)
         res.status(200).json({ success: true, message: 'agent deleted' })

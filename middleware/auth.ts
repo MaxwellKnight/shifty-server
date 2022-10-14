@@ -1,8 +1,10 @@
+import { Response, Request, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import constants from '../constants'
 import { createError } from '../utils/error'
 
-export const verifyToken = (req: any, res: any, next: any) => {
+
+export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
     const token = req.cookies.access_token
     if (!token)
         next(createError(401, 'You are not authenticated!'))
@@ -11,13 +13,14 @@ export const verifyToken = (req: any, res: any, next: any) => {
         if (err) {
             next(createError(403, 'Token is not valid!'))
         }
-        req.user = { ...agent }
+        req.body.user = { ...agent }
         next()
     })
 }
 
-export const verifyAgent = (req: any, res: any, next: any) => {
-    if (req.user.id === req.params.id || req.user.role === 'admin') {
+export const verifyAgent = (req: Request, res: Response, next: NextFunction) => {
+    const { user } = req.body
+    if (user.id === req.params.id || user.role === 'admin') {
         next()
     }
     else {
@@ -25,8 +28,9 @@ export const verifyAgent = (req: any, res: any, next: any) => {
     }
 }
 
-export const verifyAdmin = (req: any, res: any, next: any) => {
-    if (req.user.role === 'admin') {
+export const verifyAdmin = (req: Request, res: Response, next: NextFunction) => {
+    const { user } = req.body
+    if (user.role === 'admin') {
         return next()
     }
     else {
