@@ -1,13 +1,11 @@
 import { IBaseShift, IDailyConstraints } from "../../interfaces/IShift"
 import { IBaseAgent } from "../../interfaces/IBaseAgent"
-import { getDatesArray, shuffleArray, sortByShift } from '../../utils'
+import { formattedDate, getDatesArray, printTable, shuffleArray, sortByShift } from '../../utils'
 import { getAllShifts, saveAllShifts } from "../repo/shifts"
 import { getAllAgents, updateAllAgents } from '../repo/agents'
 
 import constants from '../../constants/index'
-import { Table } from "../../models/Table"
-import { createTableRepo, getAllTables } from "../repo/table"
-const { SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY } = constants.weekDays
+import { createTableRepo } from "../repo/table"
 const { MORNING, NOON, NIGHT } = constants.shiftType
 
 /**
@@ -20,20 +18,16 @@ const { MORNING, NOON, NIGHT } = constants.shiftType
  *      Array : with new weekly shiftnps at indx 0 
  *     
  */
+let datesArray: Date[] = []
 const createTable = async (startDate: Date, endDate: Date): Promise<Map<String, IBaseShift[]>> => {
 
-    const table = new Map<String, IBaseShift[]>([
-        [SUNDAY, []],
-        [MONDAY, []],
-        [TUESDAY, []],
-        [WEDNESDAY, []],
-        [THURSDAY, []],
-        [FRIDAY, []],
-        [SATURDAY, []],
-    ])
+    const table = new Map<String, IBaseShift[]>()
     try {
         const agents: IBaseAgent[] | undefined = await getAllAgents()
-        const datesArray: Date[] = getDatesArray(startDate, endDate)
+        datesArray = getDatesArray(startDate, endDate)
+        datesArray.forEach((date: Date) => {
+            table.set(formattedDate(date), [])
+        })
         let datesIndex: number = 0
         for (const [key, value] of table) {
             if (!value.length) {
@@ -41,7 +35,8 @@ const createTable = async (startDate: Date, endDate: Date): Promise<Map<String, 
                 shuffleArray(agents)
 
                 const prevShifts = shifts?.map((shift: IBaseShift) => {
-                    if ((key === SATURDAY || key === FRIDAY) && (shift.facility === 'MISHPAHOT' || shift.facility === 'SHIKUM'))
+                    const day: Date = new Date(key.toString())
+                    if (!shift?.isWeekendActive && (day.getDay() === 5 || day.getDay() === 6))
                         return shift
                     sortByShift(agents!)
                     const finalShift = fillShift(key, value, shift, agents!)
@@ -56,7 +51,7 @@ const createTable = async (startDate: Date, endDate: Date): Promise<Map<String, 
 
         }
         const newTable = await createTableRepo({ startDate, endDate, table })
-        await updateAllAgents(agents, String(newTable._id))
+        await updateAllAgents(agents, String(newTable._id), datesArray)
         //Arranged table and all agents
     } catch (err) {
         console.log(err)
@@ -88,7 +83,7 @@ const fillShift = (
     while (!shift.isFull) {
         //if the shift is FULL then mark isFull to true 
         //it will exit the loop and continue to the next shift
-        if (shift.agents?.length === shift.limit) {
+        if (shift.agents?.length >= shift.limit) {
             shift.isFull = true
             break
         }
@@ -121,32 +116,24 @@ const fillShift = (
 const validateCons = (key: String, agent: IBaseAgent, shift: IBaseShift): [boolean, IDailyConstraints] => {
 
     if (agent.weeklyShifts && (agent.weeklyLimit.totalCount < agent.weeklyLimit.limit)) {
-        const dailyShift: IDailyConstraints | undefined = agent?.weeklyShifts?.get(String(key))
         const workShift: IDailyConstraints | undefined = agent?.weeklyShifts?.get(String(key))
         const cons: IDailyConstraints | undefined = agent?.weeklyConstraints?.get(String(key))
-
-
         //Map which helps identifying if the agent worked the day before and which shift he worked
-        const validationMap = new Map<string, string>([
-            [SUNDAY, SATURDAY],
-            [MONDAY, SUNDAY],
-            [TUESDAY, MONDAY],
-            [WEDNESDAY, TUESDAY],
-            [THURSDAY, WEDNESDAY],
-            [FRIDAY, THURSDAY],
-            [SATURDAY, FRIDAY],
-        ])
+        const validationMap = new Map<string, string>()
+        datesArray.forEach((date: Date) => {
+            const yesterday = new Date(date)
+            yesterday.setDate(date.getDate() - 1)
+            validationMap.set(formattedDate(date), formattedDate(yesterday))
+        })
 
-
-        if (dailyShift && workShift) {
+        if (workShift) {
             if (shift.agents.includes(String(agent._id))) return [false, workShift]
-
             /**
              * If the shift we're currenly checking is a morning shift
              * than this segment checks if the user had worked the day before
              */
             if (shift.type === MORNING) {
-                if (!dailyShift?.morning && !dailyShift?.noon && !dailyShift?.night && cons?.morning) {
+                if (!workShift?.morning && !workShift?.noon && !workShift?.night && cons?.morning) {
                     const checkNightBefore: string | undefined = validationMap.get(String(key))
                     const toCheck: IDailyConstraints | undefined = agent.weeklyShifts!.get(String(checkNightBefore))
                     if (toCheck?.night)
@@ -164,7 +151,7 @@ const validateCons = (key: String, agent: IBaseAgent, shift: IBaseShift): [boole
              * wee keep track of the weekly night count 
              */
             else if (shift.type === NOON || shift.type === NIGHT) {
-                if (!dailyShift?.morning && !dailyShift?.noon && !dailyShift?.night && cons?.noon && cons?.night) {
+                if (!workShift?.morning && !workShift?.noon && !workShift?.night && cons?.noon && cons?.night) {
 
                     switch (shift.type) {
                         case NOON:

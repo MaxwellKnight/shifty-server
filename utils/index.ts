@@ -38,4 +38,26 @@ const daysCount = (startDate: Date, endDate: Date) => {
     return TotalDays
 }
 
-export { shuffleArray, sortByShift, printAgentSummary, printAgentsConstraints, printAgentsShiftCount, printTable, getDatesArray, daysCount }
+
+const formattedDate = (d = new Date) => {
+    let month = String(d?.getMonth() + 1);
+    let day = String(d?.getDate());
+    const year = String(d?.getFullYear());
+
+    if (month?.length < 2) month = '0' + month;
+    if (day?.length < 2) day = '0' + day;
+
+    return `${month}-${day}-${year}`;
+}
+
+export {
+    shuffleArray,
+    sortByShift,
+    printAgentSummary,
+    printAgentsConstraints,
+    printAgentsShiftCount,
+    printTable,
+    getDatesArray,
+    daysCount,
+    formattedDate
+}

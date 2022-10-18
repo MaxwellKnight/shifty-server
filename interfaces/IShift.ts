@@ -4,13 +4,14 @@ export interface IBaseShift {
     title: string,
     facility: string,
     type: string,
-    limit: number
+    limit: number,
     agents: string[],
     date: Date,
     length: number,
     isFull: boolean,
     timeLoss?: number,
     isFoodSupplied?: boolean,
+    isWeekendActive?: boolean,
     createdAt?: Date,
     updatedAt?: Date
 }

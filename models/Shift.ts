@@ -13,6 +13,7 @@ const BaseShiftSchema = new mongoose.Schema<IBaseShift>({
     isFull: { type: Boolean, required: true },
     timeLoss: { type: Number, required: false },
     isFoodSupplied: { type: Boolean, required: false },
+    isWeekendActive: { type: Boolean, required: false },
     createdAt: {
         type: Date,
         default: () => Date.now()

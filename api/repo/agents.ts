@@ -1,6 +1,7 @@
 import { IBaseAgent } from "../../interfaces/IBaseAgent"
 import { IDailyConstraints } from "../../interfaces/IShift"
 import { Agent, Constraints } from "../../models/Agent"
+import { formattedDate } from "../../utils"
 
 const createAgent = async (agent: IBaseAgent) => {
     try {
@@ -64,15 +65,15 @@ const updateAgent = async (id: string, data: any) => {
     }
 }
 
-const updateAllAgents = async (agents: IBaseAgent[] | undefined, tableId: string) => {
+const updateAllAgents = async (agents: IBaseAgent[] | undefined, tableId: string, datesArray: Date[]) => {
     const cons = new Map<string, IDailyConstraints>([
-        ['SUN', { morning: true, noon: true, night: true, notes: '' }],
-        ['MON', { morning: true, noon: true, night: true, notes: '' }],
-        ['TUE', { morning: true, noon: true, night: true, notes: '' }],
-        ['WED', { morning: true, noon: true, night: true, notes: '' }],
-        ['THU', { morning: true, noon: true, night: true, notes: '' }],
-        ['FRI', { morning: true, noon: true, night: true, notes: '' }],
-        ['SAT', { morning: true, noon: true, night: true, notes: '' }],
+        [formattedDate(datesArray[0]), { morning: true, noon: true, night: true, notes: '' }],
+        [formattedDate(datesArray[1]), { morning: true, noon: true, night: true, notes: '' }],
+        [formattedDate(datesArray[2]), { morning: true, noon: true, night: true, notes: '' }],
+        [formattedDate(datesArray[3]), { morning: true, noon: true, night: true, notes: '' }],
+        [formattedDate(datesArray[4]), { morning: true, noon: true, night: true, notes: '' }],
+        [formattedDate(datesArray[5]), { morning: true, noon: true, night: true, notes: '' }],
+        [formattedDate(datesArray[6]), { morning: true, noon: true, night: true, notes: '' }],
     ])
     try {
         Promise.all(agents!.map(async (agent: IBaseAgent) => {
