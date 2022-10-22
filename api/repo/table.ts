@@ -23,7 +23,7 @@ export const createTableRepo = async (table: any) => {
 
 export const getCurrentTable = async () => {
     try {
-        const table: any = await Table.find().sort({ _id: -1 }).limit(1)
+        const table: any = await Table.findOne({}, {}, { createdAt: -1 })
         if (table) {
             return { data: table }
         }

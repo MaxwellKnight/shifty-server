@@ -4,7 +4,7 @@ import { Shift, PrevShift } from "../../models/Shift"
 const getAllShifts = async () => {
     try {
         const shifts: IBaseShift[] = await Shift.find()
-        if (shifts) return { data: shifts }
+        if (shifts) { return { data: shifts } }
         else return { error: 'could not find shift' }
     } catch (err) {
         console.log(err)
@@ -59,4 +59,33 @@ const getSingleShift = async (id: string) => {
     }
 }
 
-export { getAllShifts, getSingleShift, saveAllShifts, getPrevShifts }
+const updateShift = async (id: string, shift: any) => {
+    try {
+        const newAgent = await Shift.findByIdAndUpdate(id, { $set: { ...shift } }, { new: true })
+        return { data: newAgent }
+    } catch (err) {
+        console.log(err)
+        return { error: err }
+    }
+}
+
+const deleteShiftById = async (id: string) => {
+    try {
+        await Shift.findByIdAndDelete(id)
+    } catch (e: any) {
+        console.log(e)
+    }
+}
+
+const createShiftRepo = async (shift: any) => {
+    try {
+        const newShift: any = await Shift.create(shift)
+        if (newShift) return newShift
+        else return { error: 'could not create shift' }
+    } catch (err) {
+        return err
+    }
+}
+
+
+export { getAllShifts, getSingleShift, saveAllShifts, getPrevShifts, deleteShiftById, updateShift, createShiftRepo }

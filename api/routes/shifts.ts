@@ -5,7 +5,8 @@ import {
     getAllPrevShiftsController,
     getAllShiftsController,
     getShiftByIdController,
-    updateSingleShiftController
+    updateSingleShiftController,
+    deleteShiftContoller
 } from '../controllers/shifts'
 
 const shiftsRouter = express.Router()
@@ -22,7 +23,10 @@ shiftsRouter.get('/:id', verifyToken, getShiftByIdController)
 //UPDATE SINGLE SHIFT
 shiftsRouter.patch('/:id', verifyToken, verifyAdmin, updateSingleShiftController)
 
+//DELETE SINGLE SHIFT
+shiftsRouter.delete('/:id', verifyToken, verifyAdmin, deleteShiftContoller)
+
 //CREATE SHIFT
-shiftsRouter.post('/', verifyToken, verifyAdmin, createShiftController)
+shiftsRouter.post('/new', verifyToken, verifyAdmin, createShiftController)
 
 export default shiftsRouter

@@ -10,9 +10,9 @@ import createTable from "../services/table"
 
 export const getAllTablesController = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { error, data } = await getAllTables()
+        const { data } = await getAllTables()
         if (data) res.status(200).send(data)
-        else if (error) next(createError(400, 'could not complete process'))
+        else next(createError(400, 'could not complete process'))
     } catch (error) {
         console.log(error)
         return next(createError())
@@ -21,9 +21,9 @@ export const getAllTablesController = async (req: Request, res: Response, next: 
 
 export const getCurrentTableController = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { error, data }: any = await getCurrentTable()
+        const { data }: any = await getCurrentTable()
         if (data) res.status(200).send(data)
-        else if (error) next(createError(400, error))
+        else next(createError(400, ''))
     } catch (error) {
         console.log(error)
         return next(createError())
@@ -56,14 +56,11 @@ export const createTableController = async (req: Request, res: Response, next: N
 
 export const getTableByIdController = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { error, data }: any = await getTableById(req.params.id)
+        const { data }: any = await getTableById(req.params.id)
         if (data) {
             res.status(200).json(data)
         }
-        else if
-            (error) next(createError(404, 'Not found'))
-        else
-            next(error)
+        else next(createError(404, 'Not found'))
     } catch (error) {
         next(createError())
     }
