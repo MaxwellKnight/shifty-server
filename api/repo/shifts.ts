@@ -15,7 +15,6 @@ const getPrevShifts = async () => {
     try {
         const shifts: any = await PrevShift.find()
             .populate('agents')
-        console.log(shifts.agents)
         if (shifts) return { data: shifts }
         else return { error: 'could not complete process' }
     } catch (error) {
@@ -24,9 +23,34 @@ const getPrevShifts = async () => {
     }
 }
 
+const saveSignlePrevShift = async (shift: any) => {
+    try {
+        const newShift = {
+            title: shift.title,
+            facility: shift.facility,
+            type: shift.type,
+            limit: shift.limit,
+            agents: shift.agents,
+            date: shift.date,
+            length: shift.length,
+            isFull: shift.isFull,
+            timeLoss: shift.timeLoss,
+            isFoodSupplied: shift.isFoodSupplied,
+            isTeamLeader: shift.isTeamLeader,
+            isStudentPreferred: shift.isStudentPreferred,
+            isWeekendActive: shift.isWeekendActive,
+        }
+        const createdShift = await PrevShift.create(newShift)
+        if (createdShift) return createdShift
+    } catch (error) {
+        console.log(error)
+        return
+    }
+}
+
 const saveAllShifts = async (shifts: any) => {
     try {
-        shifts?.forEach(async (shift: any) => {
+        await Promise.all(shifts?.forEach(async (shift: any) => {
             const newShift = {
                 title: shift.title,
                 facility: shift.facility,
@@ -37,10 +61,13 @@ const saveAllShifts = async (shifts: any) => {
                 length: shift.length,
                 isFull: shift.isFull,
                 timeLoss: shift.timeLoss,
-                isFoodSupplied: shift.isFoodSupplied
+                isFoodSupplied: shift.isFoodSupplied,
+                isTeamLeader: shift.isTeamLeader,
+                isStudentPreferred: shift.isStudentPreferred,
+                isWeekendActive: shift.isWeekendActive,
             }
             await PrevShift.create(newShift)
-        })
+        }))
         return { data: true }
     } catch (error) {
         console.log(error)
@@ -88,4 +115,4 @@ const createShiftRepo = async (shift: any) => {
 }
 
 
-export { getAllShifts, getSingleShift, saveAllShifts, getPrevShifts, deleteShiftById, updateShift, createShiftRepo }
+export { getAllShifts, getSingleShift, saveAllShifts, getPrevShifts, deleteShiftById, updateShift, createShiftRepo, saveSignlePrevShift }

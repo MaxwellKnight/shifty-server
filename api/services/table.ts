@@ -1,7 +1,7 @@
 import { IBaseShift, IDailyConstraints } from "../../interfaces/IShift"
 import { IBaseAgent } from "../../interfaces/IBaseAgent"
 import { formattedDate, getDatesArray, printTable, shuffleArray, sortByShift } from '../../utils'
-import { getAllShifts, saveAllShifts } from "../repo/shifts"
+import { getAllShifts, saveAllShifts, saveSignlePrevShift } from "../repo/shifts"
 import { getAllAgents, updateAllAgents } from '../repo/agents'
 
 import constants from '../../constants/index'
@@ -22,6 +22,7 @@ let datesArray: Date[] = []
 const createTable = async (startDate: Date, endDate: Date): Promise<Map<String, IBaseShift[]>> => {
 
     const table = new Map<String, IBaseShift[]>()
+    let newTable: any
     try {
         const agents: IBaseAgent[] | undefined = await getAllAgents()
         datesArray = getDatesArray(startDate, endDate)
@@ -34,29 +35,35 @@ const createTable = async (startDate: Date, endDate: Date): Promise<Map<String, 
                 const { error, data: shifts }: any = await getAllShifts()
                 shuffleArray(agents)
 
-                const prevShifts = shifts?.map((shift: IBaseShift) => {
+                const prevShifts = await Promise.all(shifts?.map(async (shift: IBaseShift) => {
                     const day: Date = new Date(key.toString())
                     if (!shift?.isWeekendActive && (day.getDay() === 5 || day.getDay() === 6))
                         return shift
                     sortByShift(agents!)
                     const finalShift = fillShift(key, value, shift, agents!)
-                    finalShift.date = new Date(datesArray[datesIndex])
-                    value.push(finalShift)
-                    return shift
-                })
+                    finalShift.date = datesArray[datesIndex]
+                    try {
+                        const saved: any = await saveSignlePrevShift(finalShift)
+                        if (saved) value.push(saved)
+                        return shift
+                    } catch (error) {
+                        console.log(error)
+                        return
+                    }
+                }))
                 datesIndex++
                 if (datesIndex > datesArray.length - 1) datesIndex = 0
-                await saveAllShifts(prevShifts)
+                // await saveAllShifts(prevShifts)
             }
 
         }
-        const newTable = await createTableRepo({ startDate, endDate, table })
-        await updateAllAgents(agents, String(newTable._id), datesArray)
+        await updateAllAgents(agents, String(newTable?._id), datesArray)
+        newTable = await createTableRepo({ startDate, endDate, table })
         //Arranged table and all agents
     } catch (err) {
         console.log(err)
     }
-    return table
+    return newTable
 }
 
 /** 
