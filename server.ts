@@ -2,7 +2,7 @@ require('dotenv').config()
 import express from 'express'
 import cookie from 'cookie-parser'
 import setHeaders from './middleware/setHeaders'
-import { agentRouter, authRouter, shiftsRouter, tableRouter } from './api'
+import { agentRouter, authRouter, dateRange, shiftsRouter, tableRouter } from './api'
 import connectDB from './config/mongoose'
 import errorHandler from './middleware/errorHandler'
 const cors = require('cors')
@@ -19,6 +19,7 @@ app.use('/auth', authRouter)
 app.use('/agents', agentRouter)
 app.use('/shifts', shiftsRouter)
 app.use('/tables', tableRouter)
+app.use('/dates', dateRange)
 app.use(errorHandler)
 
 app.listen(port, () => {
