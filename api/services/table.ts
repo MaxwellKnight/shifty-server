@@ -122,7 +122,7 @@ const fillShift = (
  */
 const validateCons = (key: String, agent: IBaseAgent, shift: IBaseShift): [boolean, IDailyConstraints] => {
 
-    if (agent.weeklyShifts && (agent.weeklyLimit.totalCount < agent.weeklyLimit.limit)) {
+    if (agent.weeklyLimit.totalCount < agent.weeklyLimit.limit) {
         const workShift: IDailyConstraints | undefined = agent?.weeklyShifts?.get(String(key))
         const cons: IDailyConstraints | undefined = agent?.weeklyConstraints?.get(String(key))
         //Map which helps identifying if the agent worked the day before and which shift he worked
@@ -161,18 +161,20 @@ const validateCons = (key: String, agent: IBaseAgent, shift: IBaseShift): [boole
                 if (!workShift?.morning && !workShift?.noon && !workShift?.night && cons?.noon && cons?.night) {
 
                     switch (shift.type) {
-                        case NOON:
+                        case NOON: {
                             agent.weeklyLimit.totalCount++
                             workShift!.noon = true
                             workShift!.notes = shift.title.split("-")[0]
                             break
-                        case NIGHT:
+                        }
+                        case NIGHT: {
                             if (agent.weeklyLimit.nightCount >= 2) break
                             agent.weeklyLimit.totalCount++
                             agent.weeklyLimit.nightCount++
                             workShift!.notes = shift.title.split("-")[0]
                             workShift!.night = true
                             break
+                        }
                     }
                     return [true, workShift]
                 }
