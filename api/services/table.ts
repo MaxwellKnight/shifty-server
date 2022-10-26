@@ -165,7 +165,7 @@ const validateCons = (key: String, agent: IBaseAgent, shift: IBaseShift): [boole
                             agent.weeklyLimit.totalCount++
                             workShift!.noon = true
                             workShift!.notes = shift.title.split("-")[0]
-                            break
+                            return [true, workShift]
                         }
                         case NIGHT: {
                             if (agent.weeklyLimit.nightCount >= 2) break
@@ -173,10 +173,9 @@ const validateCons = (key: String, agent: IBaseAgent, shift: IBaseShift): [boole
                             agent.weeklyLimit.nightCount++
                             workShift!.notes = shift.title.split("-")[0]
                             workShift!.night = true
-                            break
+                            return [true, workShift]
                         }
                     }
-                    return [true, workShift]
                 }
             }
         }
