@@ -39,7 +39,7 @@ const daysCount = (startDate: Date, endDate: Date) => {
 }
 
 
-const formattedDate = (d = new Date) => {
+const formattedDate = (d: Date | undefined = new Date) => {
     let month = String(d?.getMonth() + 1);
     let day = String(d?.getDate());
     const year = String(d?.getFullYear());
@@ -47,8 +47,20 @@ const formattedDate = (d = new Date) => {
     if (month?.length < 2) month = '0' + month;
     if (day?.length < 2) day = '0' + day;
 
-    return `${month}-${day}-${year}`;
+    return `${day}/${month}/${year}`;
 }
+const getDayFromDate = (date: Date) => {
+    return new Map([
+        [0, 'ראשון'],
+        [1, 'שני'],
+        [2, 'שלישי'],
+        [3, 'רביעי'],
+        [4, 'חמישי'],
+        [5, 'שישי'],
+        [6, 'שבת']
+    ]).get(date.getDay())
+}
+
 
 export {
     shuffleArray,
@@ -59,5 +71,6 @@ export {
     printTable,
     getDatesArray,
     daysCount,
-    formattedDate
+    formattedDate,
+    getDayFromDate
 }

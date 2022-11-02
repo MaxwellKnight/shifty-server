@@ -1,7 +1,7 @@
 import { IBaseShift, IDailyConstraints } from "../../interfaces/IShift"
 import { IBaseAgent } from "../../interfaces/IBaseAgent"
-import { formattedDate, getDatesArray, printTable, shuffleArray, sortByShift } from '../../utils'
-import { getAllShifts, saveAllShifts, saveSignlePrevShift } from "../repo/shifts"
+import { formattedDate, getDatesArray, shuffleArray, sortByShift } from '../../utils'
+import { getAllShifts, saveSignlePrevShift } from "../repo/shifts"
 import { getAllAgents, updateAllAgents } from '../repo/agents'
 
 import constants from '../../constants/index'
@@ -36,8 +36,11 @@ const createTable = async (startDate: Date, endDate: Date): Promise<Map<String, 
                 shuffleArray(agents)
 
                 const prevShifts = await Promise.all(shifts?.map(async (shift: IBaseShift) => {
-                    const day: Date = new Date(key.toString())
-                    if (!shift?.isWeekendActive && (day.getDay() === 5 || day.getDay() === 6))
+                    const [day, month, year] = key.split('/')
+                    const newDate = new Date()
+                    newDate.setFullYear(parseInt(year), parseInt(month) - 1, parseInt(day))
+
+                    if (!shift?.isWeekendActive && (newDate.getDay() === 5 || newDate.getDay() === 6))
                         return shift
                     sortByShift(agents!)
                     const finalShift = fillShift(key, value, shift, agents!)
@@ -125,6 +128,8 @@ const validateCons = (key: String, agent: IBaseAgent, shift: IBaseShift): [boole
     if (agent.weeklyLimit.totalCount < agent.weeklyLimit.limit) {
         const workShift: IDailyConstraints | undefined = agent?.weeklyShifts?.get(String(key))
         const cons: IDailyConstraints | undefined = agent?.weeklyConstraints?.get(String(key))
+
+        console.log(key)
         //Map which helps identifying if the agent worked the day before and which shift he worked
         const validationMap = new Map<string, string>()
         datesArray.forEach((date: Date) => {

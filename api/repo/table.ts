@@ -1,4 +1,5 @@
 import { IBaseAgent } from "../../interfaces/IBaseAgent"
+import { DateRange } from "../../models/Date"
 import { Table } from "../../models/Table"
 
 export const getAllTables = async () => {
@@ -15,6 +16,7 @@ export const getAllTables = async () => {
 export const createTableRepo = async (table: any) => {
     try {
         const newTable: any = await Table.create(table)
+        await DateRange.deleteMany()
         return (newTable)
     } catch (err) {
         return err

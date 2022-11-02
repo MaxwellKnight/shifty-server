@@ -47,7 +47,7 @@ const PrevShiftSchema = new mongoose.Schema({
     facility: { type: String, required: true },
     type: { type: String, required: true },
     limit: { type: Number, required: true },
-    teamLeader: { type: String, required: false },
+    teamLeader: { type: mongoose.Schema.Types.ObjectId, required: false },
     isTeamLeader: { type: Boolean, required: true, default: false },
     isStudentPreferred: { type: Boolean, required: true, default: false },
     agents: [{ type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Agent' }],

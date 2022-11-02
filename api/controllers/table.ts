@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express"
 import { nextTick } from "process"
 import { IBaseShift } from "../../interfaces/IShift"
+import { DateRange } from "../../models/Date"
 import { daysCount } from "../../utils"
 import { createError } from "../../utils/error"
 import { getAllTables, getCurrentTable, getTableById, deleteTableById } from "../repo/table"
@@ -21,9 +22,9 @@ export const getAllTablesController = async (req: Request, res: Response, next: 
 
 export const getCurrentTableController = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { data }: any = await getCurrentTable()
-        if (data) res.status(200).send(data)
-        else next(createError(400, ''))
+        const data: any = await getCurrentTable()
+        if (data.data) res.status(200).send(data)
+        else if (data.error) next(createError(404, data.error))
     } catch (error) {
         console.log(error)
         return next(createError())
@@ -41,8 +42,9 @@ export const createTableController = async (req: Request, res: Response, next: N
             }
             else {
                 const table: Map<String, IBaseShift[]> = await createTable(req.body.startDate, req.body.endDate)
-                if (table)
+                if (table) {
                     res.status(200).json(table)
+                }
                 else next(createError(400, 'could not create table'))
             }
         }

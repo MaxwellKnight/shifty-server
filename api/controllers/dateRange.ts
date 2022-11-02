@@ -1,10 +1,15 @@
 import express, { Request, Response, NextFunction } from 'express'
 import { IDateRange } from '../../interfaces/IDateRange'
 import { createError } from '../../utils/error'
-import { createDateRange } from '../repo/dateRange'
+import { createDateRange, getAllDates } from '../repo/dateRange'
 
-const getDatesController = (req: Request, res: Response, next: NextFunction) => {
-    res.json('dates route')
+const getDatesController = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const dates: IDateRange[] | undefined = await getAllDates()
+        res.status(200).send(dates)
+    } catch (error) {
+        next(createError(500))
+    }
 }
 
 const createDatesController = async (req: Request, res: Response, next: NextFunction) => {
